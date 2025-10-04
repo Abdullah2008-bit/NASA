@@ -113,12 +113,12 @@ SkyCast is now equipped with **cutting-edge enhancements** that make it a **worl
   - PM2.5: 85 μg/m³ (Expected: 15)
   - Severity: HIGH
   - Cause: "Wildfire smoke transport from regional fires"
-  
+
 - **Traffic Congestion Scenario**
   - NO₂: 65 ppb (Expected: 25)
   - Severity: MEDIUM
   - Cause: "Rush hour traffic congestion"
-  
+
 - **Photochemical Smog Scenario**
   - O₃: 95 ppb (Expected: 45)
   - Severity: HIGH
@@ -210,12 +210,12 @@ SkyCast is now equipped with **cutting-edge enhancements** that make it a **worl
   - Orange: 101-150 (Unhealthy for Sensitive)
   - Red: 151-200 (Unhealthy)
   - Purple: 201+ (Very Unhealthy)
-  
+
 - **Pollutant Bars** - Normalized to max value:
   - NO₂ bar (blue gradient)
   - O₃ bar (cyan gradient)
   - PM2.5 bar (gray gradient)
-  
+
 - **Best/Worst Indicators:**
   - 🏆 Trophy for lowest AQI (cleanest air)
   - ⚠️ Warning for highest AQI (worst air quality)

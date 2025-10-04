@@ -1,14 +1,18 @@
-import React from 'react'
-import { motion } from 'framer-motion'
+import React from "react";
+import { motion } from "framer-motion";
 
 interface LoadingSkeletonProps {
-  variant?: 'card' | 'chart' | 'globe' | 'text' | 'stat'
-  className?: string
+  variant?: "card" | "chart" | "globe" | "text" | "stat";
+  className?: string;
 }
 
-export function LoadingSkeleton({ variant = 'card', className = '' }: LoadingSkeletonProps) {
-  const baseClass = 'animate-pulse bg-gradient-to-r from-white/5 via-white/10 to-white/5 rounded-xl'
-  
+export function LoadingSkeleton({
+  variant = "card",
+  className = "",
+}: LoadingSkeletonProps) {
+  const baseClass =
+    "animate-pulse bg-gradient-to-r from-white/5 via-white/10 to-white/5 rounded-xl";
+
   const variants = {
     card: (
       <div className={`${baseClass} ${className} p-6 space-y-4`}>
@@ -24,11 +28,14 @@ export function LoadingSkeleton({ variant = 'card', className = '' }: LoadingSke
       </div>
     ),
     globe: (
-      <div className={`${baseClass} ${className} flex items-center justify-center`} style={{ height: '600px' }}>
+      <div
+        className={`${baseClass} ${className} flex items-center justify-center`}
+        style={{ height: "600px" }}
+      >
         <div className="text-center space-y-4">
           <motion.div
             animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
             className="w-24 h-24 border-4 border-blue-500/30 border-t-blue-500 rounded-full mx-auto"
           />
           <div className="space-y-2">
@@ -51,25 +58,31 @@ export function LoadingSkeleton({ variant = 'card', className = '' }: LoadingSke
         <div className="h-8 bg-white/20 rounded w-3/4" />
       </div>
     ),
-  }
-  
-  return variants[variant]
+  };
+
+  return variants[variant];
 }
 
-export function LoadingSpinner({ size = 'md', className = '' }: { size?: 'sm' | 'md' | 'lg', className?: string }) {
+export function LoadingSpinner({
+  size = "md",
+  className = "",
+}: {
+  size?: "sm" | "md" | "lg";
+  className?: string;
+}) {
   const sizes = {
-    sm: 'w-4 h-4 border-2',
-    md: 'w-8 h-8 border-3',
-    lg: 'w-12 h-12 border-4',
-  }
-  
+    sm: "w-4 h-4 border-2",
+    md: "w-8 h-8 border-3",
+    lg: "w-12 h-12 border-4",
+  };
+
   return (
     <motion.div
       animate={{ rotate: 360 }}
-      transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
       className={`${sizes[size]} border-blue-500/30 border-t-blue-500 rounded-full ${className}`}
     />
-  )
+  );
 }
 
 export function PageLoader() {
@@ -85,9 +98,11 @@ export function PageLoader() {
           <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
             SkyCast
           </h2>
-          <p className="text-white/60 text-sm">Loading NASA Air Quality Data...</p>
+          <p className="text-white/60 text-sm">
+            Loading NASA Air Quality Data...
+          </p>
         </motion.div>
-        
+
         <div className="flex justify-center gap-2">
           {[0, 1, 2].map((i) => (
             <motion.div
@@ -105,19 +120,25 @@ export function PageLoader() {
             />
           ))}
         </div>
-        
+
         <motion.div
-          initial={{ width: '0%' }}
-          animate={{ width: '100%' }}
-          transition={{ duration: 2, ease: 'easeInOut' }}
+          initial={{ width: "0%" }}
+          animate={{ width: "100%" }}
+          transition={{ duration: 2, ease: "easeInOut" }}
           className="h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full"
         />
       </div>
     </div>
-  )
+  );
 }
 
-export function ErrorFallback({ error, resetError }: { error: Error, resetError: () => void }) {
+export function ErrorFallback({
+  error,
+  resetError,
+}: {
+  error: Error;
+  resetError: () => void;
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -128,18 +149,20 @@ export function ErrorFallback({ error, resetError }: { error: Error, resetError:
         <div className="text-center space-y-6">
           <div className="text-6xl">⚠️</div>
           <div>
-            <h2 className="text-2xl font-bold text-white mb-2">Oops! Something went wrong</h2>
+            <h2 className="text-2xl font-bold text-white mb-2">
+              Oops! Something went wrong
+            </h2>
             <p className="text-white/60 text-sm">
               We encountered an error while loading the application
             </p>
           </div>
-          
+
           <div className="bg-black/30 rounded-lg p-4 text-left">
             <div className="text-xs text-red-400 font-mono overflow-auto max-h-32">
               {error.message}
             </div>
           </div>
-          
+
           <div className="flex gap-3">
             <button
               onClick={resetError}
@@ -148,18 +171,19 @@ export function ErrorFallback({ error, resetError }: { error: Error, resetError:
               Try Again
             </button>
             <button
-              onClick={() => window.location.href = '/'}
+              onClick={() => (window.location.href = "/")}
               className="flex-1 px-6 py-3 bg-white/10 text-white rounded-lg font-semibold hover:bg-white/20 transition-all border border-white/20"
             >
               Go Home
             </button>
           </div>
-          
+
           <p className="text-xs text-white/40">
-            If this problem persists, please contact support or check the console for more details.
+            If this problem persists, please contact support or check the
+            console for more details.
           </p>
         </div>
       </div>
     </motion.div>
-  )
+  );
 }

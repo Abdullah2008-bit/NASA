@@ -5,6 +5,7 @@
 Press these keyboard combinations to quickly navigate between tabs:
 
 ### 🌍 Tab Navigation
+
 - **Ctrl+1** (⌘+1 on Mac) - **Dashboard** - Main view with 3D Earth globe
 - **Ctrl+2** (⌘+2 on Mac) - **Forecast** - 6h-72h predictions
 - **Ctrl+3** (⌘+3 on Mac) - **Alerts** - Air quality warnings

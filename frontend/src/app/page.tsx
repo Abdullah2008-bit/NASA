@@ -50,7 +50,13 @@ export default function Home() {
   });
   const [alerts, setAlerts] = useState<AlertData[]>([]);
   const [currentTab, setCurrentTab] = useState<
-    "dashboard" | "forecast" | "alerts" | "history" | "validation" | "analytics" | "comparison"
+    | "dashboard"
+    | "forecast"
+    | "alerts"
+    | "history"
+    | "validation"
+    | "analytics"
+    | "comparison"
   >("dashboard");
   const [currentPollutants, setCurrentPollutants] = useState({
     aqi: 68,
@@ -92,10 +98,13 @@ export default function Home() {
         expiresAt: new Date(Date.now() + 10000),
       };
       setAlerts((prev) => [mockAlert, ...prev.slice(0, 2)]);
-      
+
       // Show toast notification for high AQI alerts
       if (mockAlert.aqi > 100) {
-        toast.warning("High AQI Alert", `Air quality in ${mockAlert.location} has deteriorated (AQI: ${mockAlert.aqi})`);
+        toast.warning(
+          "High AQI Alert",
+          `Air quality in ${mockAlert.location} has deteriorated (AQI: ${mockAlert.aqi})`
+        );
       }
     }, 15000);
 
@@ -107,53 +116,56 @@ export default function Home() {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey) {
         switch (e.key) {
-          case '1':
+          case "1":
             e.preventDefault();
-            setCurrentTab('dashboard');
-            toast.info('Navigation', 'Switched to Dashboard');
+            setCurrentTab("dashboard");
+            toast.info("Navigation", "Switched to Dashboard");
             break;
-          case '2':
+          case "2":
             e.preventDefault();
-            setCurrentTab('forecast');
-            toast.info('Navigation', 'Switched to Forecast');
+            setCurrentTab("forecast");
+            toast.info("Navigation", "Switched to Forecast");
             break;
-          case '3':
+          case "3":
             e.preventDefault();
-            setCurrentTab('alerts');
-            toast.info('Navigation', 'Switched to Alerts');
+            setCurrentTab("alerts");
+            toast.info("Navigation", "Switched to Alerts");
             break;
-          case '4':
+          case "4":
             e.preventDefault();
-            setCurrentTab('history');
-            toast.info('Navigation', 'Switched to History');
+            setCurrentTab("history");
+            toast.info("Navigation", "Switched to History");
             break;
-          case '5':
+          case "5":
             e.preventDefault();
-            setCurrentTab('validation');
-            toast.info('Navigation', 'Switched to Validation');
+            setCurrentTab("validation");
+            toast.info("Navigation", "Switched to Validation");
             break;
-          case '6':
+          case "6":
             e.preventDefault();
-            setCurrentTab('analytics');
-            toast.info('Navigation', 'Switched to Analytics');
+            setCurrentTab("analytics");
+            toast.info("Navigation", "Switched to Analytics");
             break;
-          case '7':
+          case "7":
             e.preventDefault();
-            setCurrentTab('comparison');
-            toast.info('Navigation', 'Switched to Compare');
+            setCurrentTab("comparison");
+            toast.info("Navigation", "Switched to Compare");
             break;
         }
       }
     };
 
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
   }, [toast]);
 
   // Show success toast when data is loaded
   useEffect(() => {
     if (tempoData && !tempoLoading) {
-      toast.success('Data Updated', 'Latest NASA TEMPO data loaded successfully');
+      toast.success(
+        "Data Updated",
+        "Latest NASA TEMPO data loaded successfully"
+      );
     }
   }, [tempoData, tempoLoading, toast]);
 
@@ -164,7 +176,7 @@ export default function Home() {
 
   const handleLocationSelect = (lat: number, lon: number, name: string) => {
     setSelectedLocation({ lat, lon, name });
-    toast.success('Location Changed', `Now showing data for ${name}`);
+    toast.success("Location Changed", `Now showing data for ${name}`);
   };
 
   const tabs = [
@@ -181,7 +193,7 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
       {/* Toast Notifications */}
       <ToastContainer toasts={toast.toasts} removeToast={toast.removeToast} />
-      
+
       {/* Header */}
       <header className="border-b border-gray-800 bg-black/50 backdrop-blur-xl sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
