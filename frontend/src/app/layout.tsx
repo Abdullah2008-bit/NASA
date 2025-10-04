@@ -72,7 +72,11 @@ export default function RootLayout({
       <head>
         <meta name="theme-color" content="#050814" />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}>{children}</body>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}
+      >
+        {children}
+      </body>
     </html>
   );
 }
