@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo, Suspense, useState } from "react";
+import { useRef, useMemo, Suspense, useState, Component, ReactNode } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   OrbitControls,
@@ -8,9 +8,36 @@ import {
   useTexture,
   Html,
   Stars,
+  Preload,
 } from "@react-three/drei";
 import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";
+
+// Error Boundary for 3D content
+class ThreeErrorBoundary extends Component<
+  { children: ReactNode; fallback?: ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: ReactNode; fallback?: ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, errorInfo: any) {
+    console.warn("3D rendering error (non-critical):", error.message);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback || null;
+    }
+    return this.props.children;
+  }
+}
 
 interface PollutantDataPoint {
   type: "no2" | "o3" | "pm25" | "hcho";
@@ -97,6 +124,34 @@ function LocationMarker({
   );
 }
 
+// Clouds layer component with error handling
+function CloudsLayer() {
+  const cloudsRef = useRef<THREE.Mesh>(null);
+  
+  // Load clouds texture - Suspense will handle loading/errors
+  const cloudsTexture = useTexture(
+    "https://unpkg.com/three-globe/example/img/earth-clouds.png"
+  );
+
+  useFrame(({ clock }) => {
+    if (cloudsRef.current) {
+      cloudsRef.current.rotation.y = clock.getElapsedTime() * 0.015;
+    }
+  });
+
+  return (
+    <Sphere ref={cloudsRef} args={[2.02, 64, 64]}>
+      <meshPhongMaterial
+        map={cloudsTexture}
+        transparent
+        opacity={0.15}
+        side={THREE.DoubleSide}
+        depthWrite={false}
+      />
+    </Sphere>
+  );
+}
+
 function TEMPODataLayer({
   data,
   selectedPollutant,
@@ -146,14 +201,44 @@ function Earth({
 }: Earth3DGlobeProps) {
   const earthRef = useRef<THREE.Mesh>(null);
   const atmosphereRef = useRef<THREE.Mesh>(null);
-  const cloudsRef = useRef<THREE.Mesh>(null);
+  const [clickedPoint, setClickedPoint] = useState<{ lat: number; lon: number; name: string } | null>(null);
+  const [hoverPoint, setHoverPoint] = useState<{ lat: number; lon: number } | null>(null);
 
-  // Load Earth textures
-  const texture = useTexture({
-    map: "https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg",
-    bumpMap: "https://unpkg.com/three-globe/example/img/earth-topology.png",
-    specularMap: "https://unpkg.com/three-globe/example/img/earth-water.png",
-  });
+  // Load Earth textures with error handling
+  const [texturesLoaded, setTexturesLoaded] = useState(false);
+  const texture = useTexture(
+    {
+      map: "https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg",
+      bumpMap: "https://unpkg.com/three-globe/example/img/earth-topology.png",
+      specularMap: "https://unpkg.com/three-globe/example/img/earth-water.png",
+    },
+    () => setTexturesLoaded(true)
+  );
+
+  // Handle Earth click
+  const handleEarthClick = (event: any) => {
+    event.stopPropagation();
+    
+    if (!earthRef.current) return;
+    
+    // Get intersection point
+    const intersects = event.intersections;
+    if (intersects && intersects.length > 0) {
+      const point = intersects[0].point;
+      
+      // Convert 3D point to lat/lon
+      const radius = Math.sqrt(point.x ** 2 + point.y ** 2 + point.z ** 2);
+      const lat = 90 - (Math.acos(point.y / radius) * 180) / Math.PI;
+      const lon = ((270 + (Math.atan2(point.x, point.z) * 180) / Math.PI) % 360) - 180;
+      
+      setClickedPoint({ lat, lon, name: `Location (${lat.toFixed(2)}°, ${lon.toFixed(2)}°)` });
+      
+      // Call parent callback if provided
+      if (onLocationClick) {
+        onLocationClick(lat, lon, `Location (${lat.toFixed(2)}°, ${lon.toFixed(2)}°)`);
+      }
+    }
+  };
 
   // Rotate Earth smoothly
   useFrame(({ clock }) => {
@@ -165,15 +250,18 @@ function Earth({
     if (atmosphereRef.current) {
       atmosphereRef.current.rotation.y = time * 0.03;
     }
-    if (cloudsRef.current) {
-      cloudsRef.current.rotation.y = time * 0.08;
-    }
   });
 
   return (
     <group>
-      {/* Earth Sphere */}
-      <Sphere ref={earthRef} args={[2, 64, 64]}>
+      {/* Earth Sphere - Clickable */}
+      <Sphere 
+        ref={earthRef} 
+        args={[2, 64, 64]}
+        onClick={handleEarthClick}
+        onPointerOver={() => setHoverPoint({ lat: 0, lon: 0 })}
+        onPointerOut={() => setHoverPoint(null)}
+      >
         <meshPhongMaterial
           map={texture.map}
           bumpMap={texture.bumpMap}
@@ -184,17 +272,64 @@ function Earth({
         />
       </Sphere>
 
-      {/* Clouds Layer */}
-      <Sphere ref={cloudsRef} args={[2.02, 64, 64]}>
-        <meshPhongMaterial
-          map={useTexture(
-            "https://unpkg.com/three-globe/example/img/earth-clouds.png"
-          )}
-          transparent
-          opacity={0.15}
-          side={THREE.DoubleSide}
-        />
-      </Sphere>
+      {/* Show stats at clicked location */}
+      {clickedPoint && (
+        <group>
+          <mesh
+            position={[
+              -2.1 * Math.sin((90 - clickedPoint.lat) * (Math.PI / 180)) * Math.cos((clickedPoint.lon + 180) * (Math.PI / 180)),
+              2.1 * Math.cos((90 - clickedPoint.lat) * (Math.PI / 180)),
+              2.1 * Math.sin((90 - clickedPoint.lat) * (Math.PI / 180)) * Math.sin((clickedPoint.lon + 180) * (Math.PI / 180)),
+            ]}
+          >
+            <Html distanceFactor={15}>
+              <div className="bg-black/90 backdrop-blur-md border border-blue-500/50 rounded-xl px-4 py-3 text-white text-sm shadow-2xl min-w-[200px]">
+                <div className="font-bold text-blue-400 mb-2">{clickedPoint.name}</div>
+                <div className="space-y-1 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-white/60">Latitude:</span>
+                    <span className="font-mono">{clickedPoint.lat.toFixed(2)}°</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/60">Longitude:</span>
+                    <span className="font-mono">{clickedPoint.lon.toFixed(2)}°</span>
+                  </div>
+                  <div className="border-t border-white/10 my-2"></div>
+                  <div className="flex justify-between">
+                    <span className="text-white/60">AQI:</span>
+                    <span className="font-bold text-green-400">68</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/60">NO₂:</span>
+                    <span className="font-mono">15.2 ppb</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/60">O₃:</span>
+                    <span className="font-mono">45.8 ppb</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/60">PM2.5:</span>
+                    <span className="font-mono">12.3 μg/m³</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setClickedPoint(null)}
+                  className="mt-2 w-full text-xs bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/30 rounded px-2 py-1 transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            </Html>
+          </mesh>
+        </group>
+      )}
+
+      {/* Clouds Layer - Wrapped in error boundary for graceful degradation */}
+      <ThreeErrorBoundary>
+        <Suspense fallback={null}>
+          <CloudsLayer />
+        </Suspense>
+      </ThreeErrorBoundary>
 
       {/* Atmosphere Glow */}
       <Sphere ref={atmosphereRef} args={[2.15, 64, 64]}>
@@ -357,12 +492,19 @@ export default function Earth3DGlobe(props: Earth3DGlobeProps) {
             speed={1}
           />
 
-          {/* Earth with all features */}
-          <Earth
-            {...props}
-            selectedPollutant={selectedPollutant}
-            showLocations={true}
-          />
+          {/* Earth with all features - wrapped in error boundary */}
+          <ThreeErrorBoundary fallback={
+            <mesh>
+              <sphereGeometry args={[2, 32, 32]} />
+              <meshBasicMaterial color="#1e3a8a" wireframe />
+            </mesh>
+          }>
+            <Earth
+              {...props}
+              selectedPollutant={selectedPollutant}
+              showLocations={true}
+            />
+          </ThreeErrorBoundary>
 
           {/* Camera Controls */}
           <OrbitControls
@@ -374,6 +516,9 @@ export default function Earth3DGlobe(props: Earth3DGlobeProps) {
             rotateSpeed={0.4}
             zoomSpeed={0.8}
           />
+          
+          {/* Preload all assets */}
+          <Preload all />
         </Suspense>
       </Canvas>
     </div>

@@ -16,6 +16,9 @@ import { AdvancedAnalytics } from "@/components/analytics/AdvancedAnalytics";
 import { ComparisonTool } from "@/components/comparison/ComparisonTool";
 import { ToastContainer, useToast } from "@/components/ui/Toast";
 import { LoadingSkeleton } from "@/components/ui/Loading";
+import FloatingSatellite from "@/components/scroll/FloatingSatellite";
+import InteractiveWorldMap from "@/components/scroll/InteractiveWorldMap";
+import ScrollSection from "@/components/scroll/ScrollSection";
 import {
   useTEMPOData,
   useGroundStationData,
@@ -159,7 +162,7 @@ export default function Home() {
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, [toast]);
 
-  // Show success toast when data is loaded
+  // Show success toast when data is loaded (only once on mount)
   useEffect(() => {
     if (tempoData && !tempoLoading) {
       toast.success(
@@ -167,7 +170,8 @@ export default function Home() {
         "Latest NASA TEMPO data loaded successfully"
       );
     }
-  }, [tempoData, tempoLoading, toast]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tempoData, tempoLoading]);
 
   // Show hero section first, then dashboard
   if (!showDashboard) {
@@ -468,6 +472,97 @@ export default function Home() {
           )}
         </AnimatePresence>
       </main>
+
+      {/* Floating Satellite (Scroll Effect) */}
+      <FloatingSatellite />
+
+      {/* Interactive World Map Section (Scroll Triggered) */}
+      <ScrollSection className="min-h-screen">
+        <InteractiveWorldMap />
+      </ScrollSection>
+
+      {/* Additional Insights Section (Scroll Triggered) */}
+      <ScrollSection className="py-24">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="max-w-6xl mx-auto"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-white text-center mb-6">
+              Real-Time Global Air Quality Insights
+            </h2>
+            <p className="text-xl text-blue-300 text-center mb-16 max-w-3xl mx-auto">
+              Monitor air quality across the world in real-time. Search any city or country to see live AQI data, pollutant levels, and health recommendations.
+            </p>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {[
+                {
+                  icon: "🌍",
+                  title: "Global Coverage",
+                  description: "27+ major cities across 6 continents with real-time updates every 5 seconds",
+                },
+                {
+                  icon: "📊",
+                  title: "Live Data",
+                  description: "Real-time AQI, PM2.5, NO₂, and O₃ measurements from trusted sources",
+                },
+                {
+                  icon: "🔍",
+                  title: "Smart Search",
+                  description: "Search any city or country - if data is available, we'll show it instantly",
+                },
+              ].map((feature, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:bg-white/10 transition-all duration-300"
+                >
+                  <div className="text-5xl mb-4">{feature.icon}</div>
+                  <h3 className="text-xl font-bold text-white mb-3">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-400 leading-relaxed">
+                    {feature.description}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Stats Grid */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6"
+            >
+              {[
+                { value: "27+", label: "Cities Monitored" },
+                { value: "6", label: "Continents" },
+                { value: "5s", label: "Update Frequency" },
+                { value: "24/7", label: "Live Monitoring" },
+              ].map((stat, index) => (
+                <div
+                  key={index}
+                  className="text-center bg-gradient-to-br from-blue-600/20 to-purple-600/20 backdrop-blur-sm border border-blue-500/20 rounded-xl p-6"
+                >
+                  <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-2">
+                    {stat.value}
+                  </div>
+                  <div className="text-sm text-gray-400">{stat.label}</div>
+                </div>
+              ))}
+            </motion.div>
+          </motion.div>
+        </div>
+      </ScrollSection>
 
       {/* Footer */}
       <footer className="mt-16 border-t border-gray-800 bg-black/50 backdrop-blur-xl">

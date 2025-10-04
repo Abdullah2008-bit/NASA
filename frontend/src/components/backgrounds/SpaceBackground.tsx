@@ -151,8 +151,10 @@ function AnimatedParticles() {
   useFrame(() => {
     if (!particlesRef.current) return;
 
-    const positions = particlesRef.current.geometry.attributes.position
-      .array as Float32Array;
+    const positionAttribute = particlesRef.current.geometry.attributes.position;
+    if (!positionAttribute) return;
+    
+    const positions = positionAttribute.array as Float32Array;
     const velocities = particlesRef.current.userData.velocities;
 
     for (let i = 0; i < positions.length; i += 3) {
@@ -166,7 +168,7 @@ function AnimatedParticles() {
       if (Math.abs(positions[i + 2]) > 25) positions[i + 2] *= -1;
     }
 
-    particlesRef.current.geometry.attributes.position.needsUpdate = true;
+    positionAttribute.needsUpdate = true;
   });
 
   return (
@@ -224,15 +226,15 @@ export function SpaceBackground() {
           color="#3b82f6"
         />
 
-        {/* Animated Stars - Smaller, more realistic like tiny dots */}
+        {/* Animated Stars - Tiny realistic dots like real stars */}
         <Stars
           radius={300}
           depth={60}
-          count={8000}
-          factor={2}
+          count={10000}
+          factor={0.4}
           saturation={0}
           fade
-          speed={0.3}
+          speed={0.2}
         />
 
         {/* Galaxy */}
