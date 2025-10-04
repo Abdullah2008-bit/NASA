@@ -1,6 +1,13 @@
 "use client";
 
-import { useRef, useMemo, Suspense, useState, Component, ReactNode } from "react";
+import {
+  useRef,
+  useMemo,
+  Suspense,
+  useState,
+  Component,
+  ReactNode,
+} from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   OrbitControls,
@@ -127,7 +134,7 @@ function LocationMarker({
 // Clouds layer component with error handling
 function CloudsLayer() {
   const cloudsRef = useRef<THREE.Mesh>(null);
-  
+
   // Load clouds texture - Suspense will handle loading/errors
   const cloudsTexture = useTexture(
     "https://unpkg.com/three-globe/example/img/earth-clouds.png"
@@ -201,8 +208,15 @@ function Earth({
 }: Earth3DGlobeProps) {
   const earthRef = useRef<THREE.Mesh>(null);
   const atmosphereRef = useRef<THREE.Mesh>(null);
-  const [clickedPoint, setClickedPoint] = useState<{ lat: number; lon: number; name: string } | null>(null);
-  const [hoverPoint, setHoverPoint] = useState<{ lat: number; lon: number } | null>(null);
+  const [clickedPoint, setClickedPoint] = useState<{
+    lat: number;
+    lon: number;
+    name: string;
+  } | null>(null);
+  const [hoverPoint, setHoverPoint] = useState<{
+    lat: number;
+    lon: number;
+  } | null>(null);
 
   // Load Earth textures with error handling
   const [texturesLoaded, setTexturesLoaded] = useState(false);
@@ -218,24 +232,33 @@ function Earth({
   // Handle Earth click
   const handleEarthClick = (event: any) => {
     event.stopPropagation();
-    
+
     if (!earthRef.current) return;
-    
+
     // Get intersection point
     const intersects = event.intersections;
     if (intersects && intersects.length > 0) {
       const point = intersects[0].point;
-      
+
       // Convert 3D point to lat/lon
       const radius = Math.sqrt(point.x ** 2 + point.y ** 2 + point.z ** 2);
       const lat = 90 - (Math.acos(point.y / radius) * 180) / Math.PI;
-      const lon = ((270 + (Math.atan2(point.x, point.z) * 180) / Math.PI) % 360) - 180;
-      
-      setClickedPoint({ lat, lon, name: `Location (${lat.toFixed(2)}°, ${lon.toFixed(2)}°)` });
-      
+      const lon =
+        ((270 + (Math.atan2(point.x, point.z) * 180) / Math.PI) % 360) - 180;
+
+      setClickedPoint({
+        lat,
+        lon,
+        name: `Location (${lat.toFixed(2)}°, ${lon.toFixed(2)}°)`,
+      });
+
       // Call parent callback if provided
       if (onLocationClick) {
-        onLocationClick(lat, lon, `Location (${lat.toFixed(2)}°, ${lon.toFixed(2)}°)`);
+        onLocationClick(
+          lat,
+          lon,
+          `Location (${lat.toFixed(2)}°, ${lon.toFixed(2)}°)`
+        );
       }
     }
   };
@@ -255,8 +278,8 @@ function Earth({
   return (
     <group>
       {/* Earth Sphere - Clickable */}
-      <Sphere 
-        ref={earthRef} 
+      <Sphere
+        ref={earthRef}
         args={[2, 64, 64]}
         onClick={handleEarthClick}
         onPointerOver={() => setHoverPoint({ lat: 0, lon: 0 })}
@@ -277,22 +300,32 @@ function Earth({
         <group>
           <mesh
             position={[
-              -2.1 * Math.sin((90 - clickedPoint.lat) * (Math.PI / 180)) * Math.cos((clickedPoint.lon + 180) * (Math.PI / 180)),
+              -2.1 *
+                Math.sin((90 - clickedPoint.lat) * (Math.PI / 180)) *
+                Math.cos((clickedPoint.lon + 180) * (Math.PI / 180)),
               2.1 * Math.cos((90 - clickedPoint.lat) * (Math.PI / 180)),
-              2.1 * Math.sin((90 - clickedPoint.lat) * (Math.PI / 180)) * Math.sin((clickedPoint.lon + 180) * (Math.PI / 180)),
+              2.1 *
+                Math.sin((90 - clickedPoint.lat) * (Math.PI / 180)) *
+                Math.sin((clickedPoint.lon + 180) * (Math.PI / 180)),
             ]}
           >
             <Html distanceFactor={15}>
               <div className="bg-black/90 backdrop-blur-md border border-blue-500/50 rounded-xl px-4 py-3 text-white text-sm shadow-2xl min-w-[200px]">
-                <div className="font-bold text-blue-400 mb-2">{clickedPoint.name}</div>
+                <div className="font-bold text-blue-400 mb-2">
+                  {clickedPoint.name}
+                </div>
                 <div className="space-y-1 text-xs">
                   <div className="flex justify-between">
                     <span className="text-white/60">Latitude:</span>
-                    <span className="font-mono">{clickedPoint.lat.toFixed(2)}°</span>
+                    <span className="font-mono">
+                      {clickedPoint.lat.toFixed(2)}°
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-white/60">Longitude:</span>
-                    <span className="font-mono">{clickedPoint.lon.toFixed(2)}°</span>
+                    <span className="font-mono">
+                      {clickedPoint.lon.toFixed(2)}°
+                    </span>
                   </div>
                   <div className="border-t border-white/10 my-2"></div>
                   <div className="flex justify-between">
@@ -493,12 +526,14 @@ export default function Earth3DGlobe(props: Earth3DGlobeProps) {
           />
 
           {/* Earth with all features - wrapped in error boundary */}
-          <ThreeErrorBoundary fallback={
-            <mesh>
-              <sphereGeometry args={[2, 32, 32]} />
-              <meshBasicMaterial color="#1e3a8a" wireframe />
-            </mesh>
-          }>
+          <ThreeErrorBoundary
+            fallback={
+              <mesh>
+                <sphereGeometry args={[2, 32, 32]} />
+                <meshBasicMaterial color="#1e3a8a" wireframe />
+              </mesh>
+            }
+          >
             <Earth
               {...props}
               selectedPollutant={selectedPollutant}
@@ -516,7 +551,7 @@ export default function Earth3DGlobe(props: Earth3DGlobeProps) {
             rotateSpeed={0.4}
             zoomSpeed={0.8}
           />
-          
+
           {/* Preload all assets */}
           <Preload all />
         </Suspense>

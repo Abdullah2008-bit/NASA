@@ -153,7 +153,7 @@ function AnimatedParticles() {
 
     const positionAttribute = particlesRef.current.geometry.attributes.position;
     if (!positionAttribute) return;
-    
+
     const positions = positionAttribute.array as Float32Array;
     const velocities = particlesRef.current.userData.velocities;
 

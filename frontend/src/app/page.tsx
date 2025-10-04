@@ -495,7 +495,9 @@ export default function Home() {
               Real-Time Global Air Quality Insights
             </h2>
             <p className="text-xl text-blue-300 text-center mb-16 max-w-3xl mx-auto">
-              Monitor air quality across the world in real-time. Search any city or country to see live AQI data, pollutant levels, and health recommendations.
+              Monitor air quality across the world in real-time. Search any city
+              or country to see live AQI data, pollutant levels, and health
+              recommendations.
             </p>
 
             <div className="grid md:grid-cols-3 gap-8">
@@ -503,17 +505,20 @@ export default function Home() {
                 {
                   icon: "🌍",
                   title: "Global Coverage",
-                  description: "27+ major cities across 6 continents with real-time updates every 5 seconds",
+                  description:
+                    "27+ major cities across 6 continents with real-time updates every 5 seconds",
                 },
                 {
                   icon: "📊",
                   title: "Live Data",
-                  description: "Real-time AQI, PM2.5, NO₂, and O₃ measurements from trusted sources",
+                  description:
+                    "Real-time AQI, PM2.5, NO₂, and O₃ measurements from trusted sources",
                 },
                 {
                   icon: "🔍",
                   title: "Smart Search",
-                  description: "Search any city or country - if data is available, we'll show it instantly",
+                  description:
+                    "Search any city or country - if data is available, we'll show it instantly",
                 },
               ].map((feature, index) => (
                 <motion.div
