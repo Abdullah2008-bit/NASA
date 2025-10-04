@@ -15,7 +15,10 @@ interface CityAQI {
 }
 
 // Initial key Pakistani cities (can be expanded)
-const BASE_CITIES: Omit<CityAQI, "aqi" | "pm25" | "no2" | "o3" | "lastUpdated">[] = [
+const BASE_CITIES: Omit<
+  CityAQI,
+  "aqi" | "pm25" | "no2" | "o3" | "lastUpdated"
+>[] = [
   { city: "Karachi", lat: 24.8607, lon: 67.0011 },
   { city: "Lahore", lat: 31.5204, lon: 74.3587 },
   { city: "Islamabad", lat: 33.6844, lon: 73.0479 },
@@ -76,7 +79,9 @@ export function PakistanFocus() {
             Pakistan Regional Air Quality
           </h2>
           <p className="text-white/60 max-w-2xl mt-1">
-            Focused monitoring of key Pakistani urban centers. Live (simulated) updates every 12s. Backend integration will replace simulation with fused TEMPO + OpenAQ data.
+            Focused monitoring of key Pakistani urban centers. Live (simulated)
+            updates every 12s. Backend integration will replace simulation with
+            fused TEMPO + OpenAQ data.
           </p>
         </div>
         <div className="flex gap-3">
@@ -97,22 +102,28 @@ export function PakistanFocus() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-gradient-to-br from-sky-500/10 to-cyan-500/10 border border-cyan-400/20 rounded-xl p-4">
           <div className="text-xs text-white/60 mb-1">Avg Regional AQI</div>
-          <div className="text-2xl font-bold text-white">{avgAQI.toFixed(0)}</div>
+          <div className="text-2xl font-bold text-white">
+            {avgAQI.toFixed(0)}
+          </div>
         </div>
         {worst && (
           <div className="bg-gradient-to-br from-rose-500/10 to-orange-500/10 border border-rose-400/30 rounded-xl p-4">
             <div className="text-xs text-white/60 mb-1">Worst City</div>
             <div className="text-lg font-semibold text-white">{worst.city}</div>
-            <div className="text-xs text-white/50">AQI {worst.aqi.toFixed(0)}</div>
+            <div className="text-xs text-white/50">
+              AQI {worst.aqi.toFixed(0)}
+            </div>
           </div>
         )}
         <div className="bg-gradient-to-br from-emerald-500/10 to-green-500/10 border border-emerald-400/20 rounded-xl p-4">
-            <div className="text-xs text-white/60 mb-1">Cities Tracked</div>
-            <div className="text-2xl font-bold text-white">{cities.length}</div>
+          <div className="text-xs text-white/60 mb-1">Cities Tracked</div>
+          <div className="text-2xl font-bold text-white">{cities.length}</div>
         </div>
         <div className="bg-gradient-to-br from-amber-500/10 to-yellow-500/10 border border-amber-400/30 rounded-xl p-4">
-            <div className="text-xs text-white/60 mb-1">Smog Mode</div>
-            <div className="text-lg font-semibold text-amber-300">{smogMode ? "Active" : "Disabled"}</div>
+          <div className="text-xs text-white/60 mb-1">Smog Mode</div>
+          <div className="text-lg font-semibold text-amber-300">
+            {smogMode ? "Active" : "Disabled"}
+          </div>
         </div>
       </div>
 
@@ -132,21 +143,31 @@ export function PakistanFocus() {
             >
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-white font-semibold text-sm">{c.city}</h3>
-                <span className={`text-[10px] px-2 py-1 rounded-full font-semibold tracking-wide ${aqiColor(c.aqi)}`}>
+                <span
+                  className={`text-[10px] px-2 py-1 rounded-full font-semibold tracking-wide ${aqiColor(
+                    c.aqi
+                  )}`}
+                >
                   AQI {c.aqi.toFixed(0)}
                 </span>
               </div>
               <div className="grid grid-cols-3 gap-2 text-center text-[11px] text-white/60">
                 <div>
-                  <div className="text-white font-medium">{c.pm25.toFixed(0)}</div>
+                  <div className="text-white font-medium">
+                    {c.pm25.toFixed(0)}
+                  </div>
                   <div>PM2.5</div>
                 </div>
                 <div>
-                  <div className="text-white font-medium">{c.no2.toFixed(0)}</div>
+                  <div className="text-white font-medium">
+                    {c.no2.toFixed(0)}
+                  </div>
                   <div>NO₂</div>
                 </div>
                 <div>
-                  <div className="text-white font-medium">{c.o3.toFixed(0)}</div>
+                  <div className="text-white font-medium">
+                    {c.o3.toFixed(0)}
+                  </div>
                   <div>O₃</div>
                 </div>
               </div>
@@ -173,15 +194,23 @@ export function PakistanFocus() {
           ))}
         </div>
         <div className="mt-6 text-xs text-white/50">
-          NOTE: Values are simulated placeholders. Upcoming backend endpoint will merge OpenAQ ground readings with NASA TEMPO-derived pollutant columns for authoritative values.
+          NOTE: Values are simulated placeholders. Upcoming backend endpoint
+          will merge OpenAQ ground readings with NASA TEMPO-derived pollutant
+          columns for authoritative values.
         </div>
       </div>
 
       {/* Advisory */}
       <div className="bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-rose-500/10 border border-amber-400/20 rounded-xl p-5">
-        <h4 className="text-white font-semibold mb-2">Seasonal Smog Advisory</h4>
+        <h4 className="text-white font-semibold mb-2">
+          Seasonal Smog Advisory
+        </h4>
         <p className="text-sm text-white/70 leading-relaxed">
-          Winter inversion layers and crop residue burning can sharply elevate particulate concentrations (PM2.5) across the Punjab region. Smog mode visually emphasizes elevated aerosol loading. Future integration: satellite AOD, boundary layer height, and machine learning risk classification.
+          Winter inversion layers and crop residue burning can sharply elevate
+          particulate concentrations (PM2.5) across the Punjab region. Smog mode
+          visually emphasizes elevated aerosol loading. Future integration:
+          satellite AOD, boundary layer height, and machine learning risk
+          classification.
         </p>
       </div>
     </div>

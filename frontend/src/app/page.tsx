@@ -129,7 +129,7 @@ export default function Home() {
         timestamp: new Date(),
         expiresAt: new Date(Date.now() + 10000),
       };
-  setRecentAlerts((prev) => [mockAlert, ...prev.slice(0, 2)]);
+      setRecentAlerts((prev) => [mockAlert, ...prev.slice(0, 2)]);
 
       // Show toast notification for high AQI alerts
       if (mockAlert.aqi > 100) {

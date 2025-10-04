@@ -216,7 +216,10 @@ export function DataValidation({ location }: DataValidationProps) {
         borderWidth: 1,
         padding: 12,
         callbacks: {
-          label: (context: { dataset: { label?: string }; parsed: { x: number; y: number } }) => {
+          label: (context: {
+            dataset: { label?: string };
+            parsed: { x: number; y: number };
+          }) => {
             const label = context.dataset.label || "";
             if (label.includes("1:1")) return label;
             return `${label}: Ground=${context.parsed.x.toFixed(

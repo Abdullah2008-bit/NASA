@@ -231,7 +231,10 @@ function Earth({
   });
 
   // Handle Earth click
-  const handleEarthClick = (event: { stopPropagation: () => void; intersections?: { point: THREE.Vector3 }[] }) => {
+  const handleEarthClick = (event: {
+    stopPropagation: () => void;
+    intersections?: { point: THREE.Vector3 }[];
+  }) => {
     event.stopPropagation();
 
     if (!earthRef.current) return;
@@ -279,11 +282,7 @@ function Earth({
   return (
     <group>
       {/* Earth Sphere - Clickable */}
-      <Sphere
-        ref={earthRef}
-        args={[2, 64, 64]}
-        onClick={handleEarthClick}
-      >
+      <Sphere ref={earthRef} args={[2, 64, 64]} onClick={handleEarthClick}>
         <meshPhongMaterial
           map={texture.map}
           bumpMap={texture.bumpMap}
@@ -429,7 +428,9 @@ export default function Earth3DGlobe(props: Earth3DGlobeProps) {
             ].map((layer) => (
               <button
                 key={layer.id}
-          onClick={() => setSelectedPollutant(layer.id as typeof selectedPollutant)}
+                onClick={() =>
+                  setSelectedPollutant(layer.id as typeof selectedPollutant)
+                }
                 className={`w-full px-3 py-2 rounded-lg text-left text-sm transition-all ${
                   selectedPollutant === layer.id
                     ? "bg-white/20 text-white border border-white/30"

@@ -103,9 +103,9 @@ export function HistoricalTrends({ location }: HistoricalTrendsProps) {
   const [historicalData, setHistoricalData] = useState<HistoricalDataPoint[]>(
     []
   );
-  const [viewMode] = useState<
-    "trends" | "comparison" | "correlation"
-  >("trends");
+  const [viewMode] = useState<"trends" | "comparison" | "correlation">(
+    "trends"
+  );
   const [selectedPollutants, setSelectedPollutants] = useState<string[]>([
     "aqi",
     "no2",
@@ -114,7 +114,7 @@ export function HistoricalTrends({ location }: HistoricalTrendsProps) {
   ]);
 
   useEffect(() => {
-  const data = generateHistoricalData(selectedRange);
+    const data = generateHistoricalData(selectedRange);
     setHistoricalData(data);
   }, [selectedRange, location]);
 
@@ -148,8 +148,7 @@ export function HistoricalTrends({ location }: HistoricalTrendsProps) {
   // Trends Chart Data
   const trendsChartData = {
     labels,
-    datasets: (
-      [
+    datasets: [
       selectedPollutants.includes("aqi") && {
         label: "AQI",
         data: historicalData.map((d) => d.aqi),
@@ -194,7 +193,7 @@ export function HistoricalTrends({ location }: HistoricalTrendsProps) {
       fill: boolean;
       tension: number;
       yAxisID: string;
-    }[]),
+    }[],
   };
 
   // Comparison Chart Data (Average by Day of Week)
@@ -307,7 +306,8 @@ export function HistoricalTrends({ location }: HistoricalTrendsProps) {
         <h4 className="text-white font-semibold mb-1">Key Insights</h4>
         <ul className="space-y-1 text-sm text-white/70">
           <li>
-            • Air quality tends to be {dayOfWeekData[1].sum / dayOfWeekData[1].count >
+            • Air quality tends to be{" "}
+            {dayOfWeekData[1].sum / dayOfWeekData[1].count >
             dayOfWeekData[0].sum / dayOfWeekData[0].count
               ? "worse on weekdays"
               : "better on weekdays"}{" "}
@@ -319,7 +319,8 @@ export function HistoricalTrends({ location }: HistoricalTrendsProps) {
             exceeded healthy AQI levels in this period
           </li>
           <li>
-            • Peak pollution typically occurs during {maxAQI > avgAQI * 1.5
+            • Peak pollution typically occurs during{" "}
+            {maxAQI > avgAQI * 1.5
               ? "extreme weather events or wildfires"
               : "rush hour traffic"}
           </li>

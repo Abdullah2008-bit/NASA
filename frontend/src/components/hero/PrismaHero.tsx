@@ -55,9 +55,23 @@ interface PrismaHeroProps {
 // Hoist initial streams so the activation effect doesn't depend on mutable state
 const INITIAL_STREAMS = [
   { id: 1, source: "TEMPO", value: 0, max: 2500, unit: "km²", active: false },
-  { id: 2, source: "MERRA-2", value: 0, max: 10000, unit: "stations", active: false },
+  {
+    id: 2,
+    source: "MERRA-2",
+    value: 0,
+    max: 10000,
+    unit: "stations",
+    active: false,
+  },
   { id: 3, source: "GOES-R", value: 0, max: 15, unit: "min", active: false },
-  { id: 4, source: "OpenAQ", value: 0, max: 96, unit: "% accuracy", active: false },
+  {
+    id: 4,
+    source: "OpenAQ",
+    value: 0,
+    max: 96,
+    unit: "% accuracy",
+    active: false,
+  },
 ];
 
 export function PrismaHero({ onEnter }: PrismaHeroProps) {

@@ -81,7 +81,8 @@ export function ComparisonTool() {
     ComparisonLocation[]
   >([PRESET_LOCATIONS[0], PRESET_LOCATIONS[1]]);
 
-  const [availableLocations, setAvailableLocations] = useState(PRESET_LOCATIONS);
+  const [availableLocations, setAvailableLocations] =
+    useState(PRESET_LOCATIONS);
 
   const addLocation = (location: ComparisonLocation) => {
     if (
@@ -168,7 +169,7 @@ export function ComparisonTool() {
           }}
         />
 
-  <div className="flex flex-wrap gap-2 max-h-40 overflow-auto pr-1">
+        <div className="flex flex-wrap gap-2 max-h-40 overflow-auto pr-1">
           {availableLocations.map((location) => {
             const isSelected = selectedLocations.find(
               (l) => l.id === location.id
@@ -201,7 +202,7 @@ export function ComparisonTool() {
       </div>
 
       {/* Comparison Grid */}
-  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4 gap-4">
         {selectedLocations.map((location, idx) => (
           <motion.div
             key={location.id}
