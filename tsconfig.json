@@ -6,7 +6,5 @@
     }
   },
   "files": [],
-  "references": [
-    { "path": "./frontend" }
-  ]
+  "references": [{ "path": "./frontend" }]
 }
