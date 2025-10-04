@@ -1,59 +1,70 @@
-import React from 'react'
-import { motion } from 'framer-motion'
+import React from "react";
+import { motion } from "framer-motion";
 
 interface DataSource {
-  name: string
-  satellite: string
-  parameters: string[]
-  resolution: string
-  frequency: string
-  status: 'active' | 'processing' | 'standby'
-  lastUpdate: string
-  coverage: string
+  name: string;
+  satellite: string;
+  parameters: string[];
+  resolution: string;
+  frequency: string;
+  status: "active" | "processing" | "standby";
+  lastUpdate: string;
+  coverage: string;
 }
 
 const DATA_SOURCES: DataSource[] = [
   {
-    name: 'TEMPO',
-    satellite: 'Geostationary (35,786 km)',
-    parameters: ['NO₂', 'O₃', 'HCHO', 'SO₂', 'Aerosol Index'],
-    resolution: '2.1 × 4.7 km',
-    frequency: 'Hourly (Daytime)',
-    status: 'active',
-    lastUpdate: '12 minutes ago',
-    coverage: 'North America'
+    name: "TEMPO",
+    satellite: "Geostationary (35,786 km)",
+    parameters: ["NO₂", "O₃", "HCHO", "SO₂", "Aerosol Index"],
+    resolution: "2.1 × 4.7 km",
+    frequency: "Hourly (Daytime)",
+    status: "active",
+    lastUpdate: "12 minutes ago",
+    coverage: "North America",
   },
   {
-    name: 'MERRA-2',
-    satellite: 'Model Reanalysis',
-    parameters: ['Wind (U/V)', 'Temperature', 'Pressure', 'Humidity', 'PBL Height'],
-    resolution: '0.5° × 0.625°',
-    frequency: '1-hour',
-    status: 'active',
-    lastUpdate: '8 minutes ago',
-    coverage: 'Global'
+    name: "MERRA-2",
+    satellite: "Model Reanalysis",
+    parameters: [
+      "Wind (U/V)",
+      "Temperature",
+      "Pressure",
+      "Humidity",
+      "PBL Height",
+    ],
+    resolution: "0.5° × 0.625°",
+    frequency: "1-hour",
+    status: "active",
+    lastUpdate: "8 minutes ago",
+    coverage: "Global",
   },
   {
-    name: 'GOES-R ABI',
-    satellite: 'GOES-16/17 (35,786 km)',
-    parameters: ['Aerosol Optical Depth', 'True Color', 'Cloud Mask', 'Fire Detection'],
-    resolution: '2 km (visible)',
-    frequency: '15 minutes',
-    status: 'active',
-    lastUpdate: '3 minutes ago',
-    coverage: 'Americas'
+    name: "GOES-R ABI",
+    satellite: "GOES-16/17 (35,786 km)",
+    parameters: [
+      "Aerosol Optical Depth",
+      "True Color",
+      "Cloud Mask",
+      "Fire Detection",
+    ],
+    resolution: "2 km (visible)",
+    frequency: "15 minutes",
+    status: "active",
+    lastUpdate: "3 minutes ago",
+    coverage: "Americas",
   },
   {
-    name: 'OpenAQ',
-    satellite: 'Ground Stations',
-    parameters: ['PM2.5', 'PM10', 'O₃', 'NO₂', 'SO₂', 'CO'],
-    resolution: 'Point measurements',
-    frequency: 'Real-time',
-    status: 'active',
-    lastUpdate: '1 minute ago',
-    coverage: '10,000+ stations worldwide'
-  }
-]
+    name: "OpenAQ",
+    satellite: "Ground Stations",
+    parameters: ["PM2.5", "PM10", "O₃", "NO₂", "SO₂", "CO"],
+    resolution: "Point measurements",
+    frequency: "Real-time",
+    status: "active",
+    lastUpdate: "1 minute ago",
+    coverage: "10,000+ stations worldwide",
+  },
+];
 
 export function DataSourcesPanel() {
   return (
@@ -63,8 +74,18 @@ export function DataSourcesPanel() {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-xl font-bold text-white flex items-center gap-2">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                />
               </svg>
               NASA Earth Observation Data Sources
             </h3>
@@ -74,7 +95,9 @@ export function DataSourcesPanel() {
           </div>
           <div className="flex items-center gap-2 bg-green-500/20 px-3 py-1 rounded-full">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-            <span className="text-xs font-semibold text-green-300">All Systems Operational</span>
+            <span className="text-xs font-semibold text-green-300">
+              All Systems Operational
+            </span>
           </div>
         </div>
       </div>
@@ -93,20 +116,26 @@ export function DataSourcesPanel() {
             <div className="flex items-start justify-between mb-4">
               <div>
                 <div className="flex items-center gap-3 mb-2">
-                  <h4 className="text-lg font-bold text-white">{source.name}</h4>
+                  <h4 className="text-lg font-bold text-white">
+                    {source.name}
+                  </h4>
                   <StatusBadge status={source.status} />
                 </div>
                 <p className="text-sm text-slate-400">{source.satellite}</p>
               </div>
               <div className="text-right">
                 <div className="text-xs text-slate-500">Last Update</div>
-                <div className="text-sm font-semibold text-cyan-400">{source.lastUpdate}</div>
+                <div className="text-sm font-semibold text-cyan-400">
+                  {source.lastUpdate}
+                </div>
               </div>
             </div>
 
             {/* Parameters */}
             <div className="mb-4">
-              <div className="text-xs font-semibold text-slate-400 mb-2">PARAMETERS</div>
+              <div className="text-xs font-semibold text-slate-400 mb-2">
+                PARAMETERS
+              </div>
               <div className="flex flex-wrap gap-2">
                 {source.parameters.map((param) => (
                   <span
@@ -123,15 +152,21 @@ export function DataSourcesPanel() {
             <div className="grid grid-cols-3 gap-4 text-sm">
               <div>
                 <div className="text-xs text-slate-500 mb-1">Resolution</div>
-                <div className="font-semibold text-white">{source.resolution}</div>
+                <div className="font-semibold text-white">
+                  {source.resolution}
+                </div>
               </div>
               <div>
                 <div className="text-xs text-slate-500 mb-1">Frequency</div>
-                <div className="font-semibold text-white">{source.frequency}</div>
+                <div className="font-semibold text-white">
+                  {source.frequency}
+                </div>
               </div>
               <div>
                 <div className="text-xs text-slate-500 mb-1">Coverage</div>
-                <div className="font-semibold text-white">{source.coverage}</div>
+                <div className="font-semibold text-white">
+                  {source.coverage}
+                </div>
               </div>
             </div>
           </motion.div>
@@ -142,7 +177,15 @@ export function DataSourcesPanel() {
       <div className="px-6 py-4 bg-slate-900/50 border-t border-slate-700/50">
         <div className="flex items-center justify-between text-sm">
           <div className="text-slate-400">
-            Data provided by NASA Earthdata Cloud • <a href="https://earthdata.nasa.gov/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 transition-colors">earthdata.nasa.gov</a>
+            Data provided by NASA Earthdata Cloud •{" "}
+            <a
+              href="https://earthdata.nasa.gov/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-400 hover:text-blue-300 transition-colors"
+            >
+              earthdata.nasa.gov
+            </a>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
@@ -151,38 +194,42 @@ export function DataSourcesPanel() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-function StatusBadge({ status }: { status: DataSource['status'] }) {
+function StatusBadge({ status }: { status: DataSource["status"] }) {
   const config = {
     active: {
-      bg: 'bg-green-500/20',
-      border: 'border-green-400/30',
-      text: 'text-green-300',
-      dot: 'bg-green-400',
-      label: 'Active'
+      bg: "bg-green-500/20",
+      border: "border-green-400/30",
+      text: "text-green-300",
+      dot: "bg-green-400",
+      label: "Active",
     },
     processing: {
-      bg: 'bg-yellow-500/20',
-      border: 'border-yellow-400/30',
-      text: 'text-yellow-300',
-      dot: 'bg-yellow-400',
-      label: 'Processing'
+      bg: "bg-yellow-500/20",
+      border: "border-yellow-400/30",
+      text: "text-yellow-300",
+      dot: "bg-yellow-400",
+      label: "Processing",
     },
     standby: {
-      bg: 'bg-slate-500/20',
-      border: 'border-slate-400/30',
-      text: 'text-slate-300',
-      dot: 'bg-slate-400',
-      label: 'Standby'
-    }
-  }[status]
+      bg: "bg-slate-500/20",
+      border: "border-slate-400/30",
+      text: "text-slate-300",
+      dot: "bg-slate-400",
+      label: "Standby",
+    },
+  }[status];
 
   return (
-    <div className={`flex items-center gap-1.5 px-2 py-1 ${config.bg} border ${config.border} rounded-full`}>
+    <div
+      className={`flex items-center gap-1.5 px-2 py-1 ${config.bg} border ${config.border} rounded-full`}
+    >
       <div className={`w-1.5 h-1.5 ${config.dot} rounded-full animate-pulse`} />
-      <span className={`text-xs font-semibold ${config.text}`}>{config.label}</span>
+      <span className={`text-xs font-semibold ${config.text}`}>
+        {config.label}
+      </span>
     </div>
-  )
+  );
 }

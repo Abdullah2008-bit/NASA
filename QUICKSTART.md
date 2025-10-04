@@ -25,7 +25,7 @@ cd backend
 venv/bin/python -m uvicorn app.main:app --reload --port 8000
 ```
 
-✅ Backend running at: **http://localhost:8000**  
+✅ Backend running at: **http://localhost:8000**
 📚 API Docs: **http://localhost:8000/docs**
 
 #### 2️⃣ **Start Frontend**

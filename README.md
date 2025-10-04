@@ -1,4 +1,4 @@
-# 🌍 SkyCast - Professional Air Quality Forecasting Platform
+<!-- # 🌍 SkyCast - Professional Air Quality Forecasting Platform
 
 <div align="center">
 
@@ -38,21 +38,34 @@
 
 ## ✨ Features
 
+### 🎯 Core Features
 - 🌐 **Real-Time 3D Globe** - Interactive Earth visualization with live pollutant overlays (NO₂, O₃, PM2.5, HCHO, Aerosols)
-- 🤖 **AI-Powered Forecasts** - LSTM/XGBoost models predict AQI for 6h/12h/24h ahead
-- 🚨 **Smart Alerts** - Real-time push notifications for poor air quality (PWA-enabled)
+- 🤖 **AI-Powered Forecasts** - LSTM/XGBoost models predict AQI for 6h/12h/24h/48h/72h ahead
+- 🚨 **Smart Alerts** - Real-time push notifications for poor air quality with health recommendations
 - 📊 **Multi-Source Data Integration** - NASA TEMPO + OpenAQ + Pandora + TOLNet + NOAA weather
-- 🎨 **Futuristic UI** - Smooth animations, glowing cards, responsive design with Framer Motion
+- 📈 **Historical Trends** - Visualize air quality patterns over 7/30/90/365 days
+- 🔬 **Satellite vs Ground Validation** - Compare TEMPO satellite data with ground station accuracy
+
+### ⭐ NEW: Ultimate Enhancements (Latest)
+- 🔍 **Advanced Analytics Dashboard** - AI-powered anomaly detection, correlation matrix (21 pollutant pairs), AQI breakdown by contribution
+- 🔄 **Multi-City Comparison** - Side-by-side comparison of up to 4 cities with best/worst indicators
+- 🔔 **Toast Notification System** - Real-time feedback with 4 types (success, error, warning, info) and auto-dismiss
+- ⏳ **Professional Loading States** - 5 skeleton variants, spinners, page loader with NASA branding, error fallback UI
+- ⌨️ **Keyboard Shortcuts** - Power user navigation (Ctrl+1-7 for tabs) with toast feedback
+- ♿ **Accessibility Features** - Screen reader support, ARIA live regions, keyboard-first design
+
+### 🎨 Design Excellence
+- 🎨 **Futuristic UI** - Prisma.io/GitHub/Zory.ai inspired glassmorphic design
+- ✨ **Smooth Animations** - Framer Motion, gradient flows, pulse effects
 - ⚡ **Zero-Lag Performance** - Code-split, lazy-loaded, cached, optimized for speed
-- 📱 **Mobile-First PWA** - Works offline, installable on any device
-- 📈 **Historical Trends** - Visualize air quality patterns over time
-- 🔬 **Satellite vs Ground Validation** - Compare satellite data with ground station accuracy
+- 📱 **Mobile-First PWA** - Works offline, installable on any device, responsive layouts
 
 ---
 
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 ![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-06B6D4?logo=tailwindcss)
@@ -68,6 +81,7 @@
 - **PWA** (Service worker, offline support)
 
 ### Backend
+
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi)
 ![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)
 ![Redis](https://img.shields.io/badge/Redis-7-DC382D?logo=redis)
@@ -79,6 +93,7 @@
 - **Pydantic** (Data validation)
 
 ### ML Pipeline
+
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.2-EE4C2C?logo=pytorch)
 ![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.4-F7931E?logo=scikit-learn)
 
@@ -90,6 +105,7 @@
 - **Earthaccess** (NASA data access)
 
 ### Cloud & DevOps
+
 ![Docker](https://img.shields.io/badge/Docker-24-2496ED?logo=docker)
 ![Vercel](https://img.shields.io/badge/Vercel-black?logo=vercel)
 ![AWS](https://img.shields.io/badge/AWS-Lambda%2FECS-FF9900?logo=amazon-aws)
@@ -166,12 +182,14 @@ skycast/
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - **Node.js** 20+
 - **Python** 3.11+
 - **Docker** & Docker Compose
 - **NASA Earthdata Account** ([Sign up here](https://urs.earthdata.nasa.gov/))
 
 ### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/Abdullah2008-bit/NASA.git
 cd NASA/skycast
@@ -180,12 +198,14 @@ cd NASA/skycast
 ### 2. Set Up Environment Variables
 
 **Frontend** (`frontend/.env.local`):
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8000
 NEXT_PUBLIC_MAPBOX_TOKEN=your_mapbox_token
 ```
 
 **Backend** (`backend/.env`):
+
 ```env
 NASA_EARTHDATA_USERNAME=your_username
 NASA_EARTHDATA_PASSWORD=your_password
@@ -194,11 +214,13 @@ OPENAQ_API_KEY=your_openaq_key
 ```
 
 ### 3. Run with Docker (Recommended)
+
 ```bash
 docker-compose up --build
 ```
 
 Access the app:
+
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:8000
 - **API Docs**: http://localhost:8000/docs
@@ -206,6 +228,7 @@ Access the app:
 ### 4. Run Locally (Development)
 
 **Frontend**:
+
 ```bash
 cd frontend
 npm install
@@ -213,6 +236,7 @@ npm run dev
 ```
 
 **Backend**:
+
 ```bash
 cd backend
 python -m venv venv
@@ -222,6 +246,7 @@ uvicorn app.main:app --reload --port 8000
 ```
 
 **ML Training**:
+
 ```bash
 cd ml
 pip install -r requirements.txt
@@ -234,15 +259,15 @@ python scripts/train_lstm.py
 
 ## 📊 Data Sources
 
-| Source | Type | Variables | Update Frequency |
-|--------|------|-----------|------------------|
-| **NASA TEMPO** | Satellite | NO₂, O₃, HCHO, PM, Aerosol Index | Near Real-Time |
-| **OpenAQ** | Ground Sensors | PM2.5, PM10, O₃, NO₂, SO₂, CO | Real-Time |
-| **Pandora** | Ground Spectroscopy | NO₂, O₃ columns | Hourly |
-| **TOLNet** | Ground Lidar | O₃ profiles | Hourly |
-| **NOAA** | Weather | Temperature, Wind, Humidity | Hourly |
-| **IMERG** | Precipitation | Rainfall | 30 minutes |
-| **MERRA-2** | Reanalysis | Multi-variable | 1-hour |
+| Source         | Type                | Variables                        | Update Frequency |
+| -------------- | ------------------- | -------------------------------- | ---------------- |
+| **NASA TEMPO** | Satellite           | NO₂, O₃, HCHO, PM, Aerosol Index | Near Real-Time   |
+| **OpenAQ**     | Ground Sensors      | PM2.5, PM10, O₃, NO₂, SO₂, CO    | Real-Time        |
+| **Pandora**    | Ground Spectroscopy | NO₂, O₃ columns                  | Hourly           |
+| **TOLNet**     | Ground Lidar        | O₃ profiles                      | Hourly           |
+| **NOAA**       | Weather             | Temperature, Wind, Humidity      | Hourly           |
+| **IMERG**      | Precipitation       | Rainfall                         | 30 minutes       |
+| **MERRA-2**    | Reanalysis          | Multi-variable                   | 1-hour           |
 
 ---
 
@@ -258,18 +283,42 @@ python scripts/train_lstm.py
 
 ---
 
+## ⌨️ Keyboard Shortcuts
+
+Navigate like a pro with keyboard shortcuts:
+
+| Shortcut    | Action                              |
+| ----------- | ----------------------------------- |
+| `Ctrl+1`    | 🌍 Dashboard (3D Globe)             |
+| `Ctrl+2`    | 📈 Forecast (6h-72h predictions)    |
+| `Ctrl+3`    | 🚨 Alerts (Health warnings)         |
+| `Ctrl+4`    | 📊 History (Time series)            |
+| `Ctrl+5`    | ✅ Validation (Data quality)        |
+| `Ctrl+6`    | 🔍 Analytics ⭐ NEW (AI insights)   |
+| `Ctrl+7`    | 🔄 Compare ⭐ NEW (Multi-city)      |
+
+> **Tip:** On Mac, use `⌘` instead of `Ctrl`. All shortcuts show instant toast feedback!
+
+See [KEYBOARD_SHORTCUTS.md](./KEYBOARD_SHORTCUTS.md) for full details.
+
+---
+
 ## 🖼️ Screenshots
 
 ### Dashboard
+
 ![Dashboard](docs/screenshots/dashboard.png)
 
 ### 3D Globe with Pollutant Overlay
+
 ![3D Globe](docs/screenshots/globe.png)
 
 ### Real-Time Alerts
+
 ![Alerts](docs/screenshots/alerts.png)
 
 ### Historical Trends
+
 ![History](docs/screenshots/history.png)
 
 ---
@@ -278,16 +327,17 @@ python scripts/train_lstm.py
 
 ### Base URL: `http://localhost:8000`
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/tempo` | GET | Fetch NASA TEMPO data (NO₂, O₃, HCHO, PM) |
-| `/api/openaq` | GET | Get ground sensor data from OpenAQ |
-| `/api/weather` | GET | Retrieve weather data (NOAA, MERRA-2) |
-| `/api/forecast` | POST | Get AI-predicted AQI (6h/12h/24h) |
-| `/api/alerts` | GET | Fetch active air quality alerts |
-| `/api/history` | GET | Get historical AQI trends |
+| Endpoint        | Method | Description                               |
+| --------------- | ------ | ----------------------------------------- |
+| `/api/tempo`    | GET    | Fetch NASA TEMPO data (NO₂, O₃, HCHO, PM) |
+| `/api/openaq`   | GET    | Get ground sensor data from OpenAQ        |
+| `/api/weather`  | GET    | Retrieve weather data (NOAA, MERRA-2)     |
+| `/api/forecast` | POST   | Get AI-predicted AQI (6h/12h/24h)         |
+| `/api/alerts`   | GET    | Fetch active air quality alerts           |
+| `/api/history`  | GET    | Get historical AQI trends                 |
 
 **Example**:
+
 ```bash
 curl http://localhost:8000/api/tempo?lat=40.7128&lon=-74.0060&date=2025-10-04
 ```
@@ -296,11 +346,11 @@ curl http://localhost:8000/api/tempo?lat=40.7128&lon=-74.0060&date=2025-10-04
 
 ## 🧠 ML Model Performance
 
-| Model | MAE | RMSE | R² Score | Inference Time |
-|-------|-----|------|----------|----------------|
-| LSTM | 8.2 | 12.4 | 0.91 | 45ms |
-| XGBoost | 7.8 | 11.9 | 0.93 | 12ms |
-| **Ensemble** | **7.1** | **10.8** | **0.94** | 57ms |
+| Model        | MAE     | RMSE     | R² Score | Inference Time |
+| ------------ | ------- | -------- | -------- | -------------- |
+| LSTM         | 8.2     | 12.4     | 0.91     | 45ms           |
+| XGBoost      | 7.8     | 11.9     | 0.93     | 12ms           |
+| **Ensemble** | **7.1** | **10.8** | **0.94** | 57ms           |
 
 ---
 
@@ -353,4 +403,4 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
   <strong>Built with ❤️ for NASA Space Apps Challenge 2025</strong>
   <br>
   <sub>Helping communities breathe cleaner air through data-driven insights</sub>
-</div> -->
+</div> --> -->

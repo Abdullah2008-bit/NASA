@@ -1,9 +1,9 @@
-import React from 'react'
-import { motion } from 'framer-motion'
-import Image from 'next/image'
+import React from "react";
+import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface HeroSectionProps {
-  onExplore: () => void
+  onExplore: () => void;
 }
 
 export function HeroSection({ onExplore }: HeroSectionProps) {
@@ -24,7 +24,9 @@ export function HeroSection({ onExplore }: HeroSectionProps) {
           className="filter brightness-0 invert"
         />
         <div className="text-white">
-          <div className="text-sm font-semibold tracking-wider">NASA SPACE APPS 2025</div>
+          <div className="text-sm font-semibold tracking-wider">
+            NASA SPACE APPS 2025
+          </div>
           <div className="text-xs opacity-70">Earth Science Division</div>
         </div>
       </div>
@@ -49,7 +51,10 @@ export function HeroSection({ onExplore }: HeroSectionProps) {
 
           {/* Main Heading */}
           <h1 className="text-6xl md:text-8xl font-bold text-white mb-6">
-            Sky<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Cast</span>
+            Sky
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
+              Cast
+            </span>
           </h1>
 
           <p className="text-2xl md:text-3xl text-blue-100 mb-4 font-light">
@@ -57,18 +62,22 @@ export function HeroSection({ onExplore }: HeroSectionProps) {
           </p>
 
           <p className="text-lg md:text-xl text-slate-300 mb-12 max-w-3xl mx-auto leading-relaxed">
-            Powered by <span className="font-semibold text-white">NASA TEMPO satellite</span>, 
-            MERRA-2 meteorological data, and advanced ML models to predict cleaner, safer skies 
-            with <span className="font-semibold text-white">96% accuracy</span>
+            Powered by{" "}
+            <span className="font-semibold text-white">
+              NASA TEMPO satellite
+            </span>
+            , MERRA-2 meteorological data, and advanced ML models to predict
+            cleaner, safer skies with{" "}
+            <span className="font-semibold text-white">96% accuracy</span>
           </p>
 
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 max-w-4xl mx-auto">
             {[
-              { value: '2.1 km', label: 'Spatial Resolution', icon: '🛰️' },
-              { value: 'Hourly', label: 'Data Updates', icon: '⏱️' },
-              { value: '96%', label: 'ML Accuracy (R²)', icon: '🎯' },
-              { value: '24h', label: 'Forecast Horizon', icon: '📊' },
+              { value: "2.1 km", label: "Spatial Resolution", icon: "🛰️" },
+              { value: "Hourly", label: "Data Updates", icon: "⏱️" },
+              { value: "96%", label: "ML Accuracy (R²)", icon: "🎯" },
+              { value: "24h", label: "Forecast Horizon", icon: "📊" },
             ].map((stat, index) => (
               <motion.div
                 key={index}
@@ -79,7 +88,9 @@ export function HeroSection({ onExplore }: HeroSectionProps) {
                 whileHover={{ scale: 1.05, y: -5 }}
               >
                 <div className="text-3xl mb-2">{stat.icon}</div>
-                <div className="text-3xl font-bold text-white mb-1">{stat.value}</div>
+                <div className="text-3xl font-bold text-white mb-1">
+                  {stat.value}
+                </div>
                 <div className="text-sm text-slate-400">{stat.label}</div>
               </motion.div>
             ))}
@@ -95,8 +106,18 @@ export function HeroSection({ onExplore }: HeroSectionProps) {
             >
               <span className="relative z-10 flex items-center gap-2">
                 🚀 Launch Dashboard
-                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                <svg
+                  className="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
                 </svg>
               </span>
             </motion.button>
@@ -121,11 +142,16 @@ export function HeroSection({ onExplore }: HeroSectionProps) {
             transition={{ delay: 1 }}
           >
             <div className="text-sm text-slate-400">Powered by:</div>
-            {['NASA TEMPO', 'MERRA-2', 'GOES-R', 'OpenAQ', 'AWS Cloud'].map((source) => (
-              <div key={source} className="text-sm font-medium text-slate-300 hover:text-white transition-colors cursor-default">
-                {source}
-              </div>
-            ))}
+            {["NASA TEMPO", "MERRA-2", "GOES-R", "OpenAQ", "AWS Cloud"].map(
+              (source) => (
+                <div
+                  key={source}
+                  className="text-sm font-medium text-slate-300 hover:text-white transition-colors cursor-default"
+                >
+                  {source}
+                </div>
+              )
+            )}
           </motion.div>
         </motion.div>
       </div>
@@ -135,12 +161,27 @@ export function HeroSection({ onExplore }: HeroSectionProps) {
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.5, repeat: Infinity, repeatType: 'reverse', duration: 1.5 }}
+        transition={{
+          delay: 1.5,
+          repeat: Infinity,
+          repeatType: "reverse",
+          duration: 1.5,
+        }}
       >
-        <svg className="w-6 h-6 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        <svg
+          className="w-6 h-6 text-white/50"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 14l-7 7m0 0l-7-7m7 7V3"
+          />
         </svg>
       </motion.div>
     </div>
-  )
+  );
 }

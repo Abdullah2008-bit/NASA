@@ -15,11 +15,13 @@ All Python import warnings are now resolved. The Python environment is configure
 #### **Frontend Deployment (Free Plan):**
 
 1. **Install Vercel CLI:**
+
 ```bash
 npm install -g vercel
 ```
 
 2. **Deploy Frontend:**
+
 ```bash
 cd frontend
 vercel
@@ -36,12 +38,14 @@ vercel
 #### **Backend Options:**
 
 **A. Vercel Serverless Functions (Easiest):**
+
 ```bash
 cd backend
 vercel
 ```
 
 **B. Railway (Alternative - Free $5 credit):**
+
 - Visit: https://railway.app/
 - Connect GitHub repo
 - Deploy backend folder
@@ -52,6 +56,7 @@ vercel
 ### **Option 2: Complete Production Setup**
 
 #### **Frontend: Vercel**
+
 ```bash
 cd frontend
 npm run build
@@ -61,6 +66,7 @@ vercel --prod
 #### **Backend: Railway/Render/Fly.io**
 
 **Railway (Recommended):**
+
 1. Go to https://railway.app/
 2. Click "New Project" → "Deploy from GitHub repo"
 3. Select NASA repository
@@ -70,6 +76,7 @@ vercel --prod
    - `CORS_ORIGINS=https://your-vercel-app.vercel.app`
 
 **Render:**
+
 1. Go to https://render.com/
 2. New → Web Service
 3. Connect GitHub repo
@@ -77,6 +84,7 @@ vercel --prod
 5. Start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
 
 **Fly.io:**
+
 ```bash
 cd backend
 fly launch
@@ -90,6 +98,7 @@ fly deploy
 #### **AWS Elastic Container Service:**
 
 1. **Build & Push to ECR:**
+
 ```bash
 cd cloud
 docker build -t skycast-backend -f Dockerfile.backend .
@@ -98,12 +107,14 @@ docker push YOUR_ECR_URL/skycast-backend:latest
 ```
 
 2. **Deploy to ECS:**
+
 - Create ECS cluster
 - Create task definition
 - Create service
 - Set load balancer
 
 #### **Google Cloud Run:**
+
 ```bash
 cd cloud
 gcloud builds submit --tag gcr.io/YOUR_PROJECT/skycast-backend
@@ -115,6 +126,7 @@ gcloud run deploy skycast-backend --image gcr.io/YOUR_PROJECT/skycast-backend
 ## 🎯 Quick Deploy (For NASA Hackathon - 5 Minutes!)
 
 ### **Step 1: Deploy Frontend to Vercel**
+
 ```bash
 cd frontend
 npm install -g vercel
@@ -123,6 +135,7 @@ vercel --prod
 ```
 
 ### **Step 2: Deploy Backend to Railway**
+
 1. Visit: https://railway.app/new
 2. Click "Deploy from GitHub repo"
 3. Select: `Abdullah2008-bit/NASA`
@@ -132,11 +145,13 @@ vercel --prod
 ### **Step 3: Update Environment Variables**
 
 **In Vercel (Frontend):**
+
 - Go to project settings
 - Add environment variable:
   - `NEXT_PUBLIC_API_URL` = `https://your-railway-app.railway.app`
 
 **In Railway (Backend):**
+
 - Add environment variables:
   - `CORS_ORIGINS` = `https://your-vercel-app.vercel.app`
 
@@ -146,25 +161,27 @@ vercel --prod
 
 ## 📊 Deployment Costs (All have FREE tiers!)
 
-| Platform | Free Tier | Best For |
-|----------|-----------|----------|
-| **Vercel** | Unlimited hobby projects | Frontend (Next.js) |
-| **Railway** | $5 free credit/month | Backend (FastAPI) |
-| **Render** | 750 hours/month free | Backend alternative |
-| **Fly.io** | 3 shared VMs free | Docker deployments |
-| **Netlify** | 100GB bandwidth | Static frontend |
+| Platform    | Free Tier                | Best For            |
+| ----------- | ------------------------ | ------------------- |
+| **Vercel**  | Unlimited hobby projects | Frontend (Next.js)  |
+| **Railway** | $5 free credit/month     | Backend (FastAPI)   |
+| **Render**  | 750 hours/month free     | Backend alternative |
+| **Fly.io**  | 3 shared VMs free        | Docker deployments  |
+| **Netlify** | 100GB bandwidth          | Static frontend     |
 
 ---
 
 ## 🔑 Environment Variables Needed
 
 ### **Frontend (.env.local):**
+
 ```env
 NEXT_PUBLIC_API_URL=https://your-backend-url.railway.app
 NEXT_PUBLIC_APP_NAME=SkyCast
 ```
 
 ### **Backend (.env):**
+
 ```env
 CORS_ORIGINS=https://your-frontend-url.vercel.app
 NASA_EARTHDATA_USERNAME=your_username
@@ -212,15 +229,19 @@ REDIS_URL=redis://your-redis-url:6379
 ## 🆘 Troubleshooting
 
 ### **CORS errors in production:**
+
 Make sure `CORS_ORIGINS` in backend includes your Vercel URL:
+
 ```env
 CORS_ORIGINS=https://skycast-abdullah2008.vercel.app
 ```
 
 ### **API not connecting:**
+
 Check frontend `NEXT_PUBLIC_API_URL` matches Railway backend URL.
 
 ### **Build fails:**
+
 - Vercel: Check Node.js version (20+)
 - Railway: Check Python version (3.11+)
 
