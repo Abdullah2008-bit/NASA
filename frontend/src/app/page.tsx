@@ -17,7 +17,6 @@ import { ToastContainer, useToast } from "@/components/ui/Toast";
 import FloatingSatellite from "@/components/scroll/FloatingSatellite";
 import InteractiveWorldMap from "@/components/scroll/InteractiveWorldMap";
 import ScrollSection from "@/components/scroll/ScrollSection";
-import { PakistanFocus } from "@/components/regions/PakistanFocus";
 import {
   useTEMPOData,
   useGroundStationData,
@@ -61,7 +60,6 @@ export default function Home() {
     | "validation"
     | "analytics"
     | "comparison"
-    | "pakistan"
   >("dashboard");
   const [currentPollutants, setCurrentPollutants] = useState({
     aqi: 68,
@@ -183,11 +181,7 @@ export default function Home() {
             setCurrentTab("comparison");
             toast.info("Navigation", "Switched to Compare");
             break;
-          case "8":
-            e.preventDefault();
-            setCurrentTab("pakistan");
-            toast.info("Navigation", "Switched to Pakistan Focus");
-            break;
+          // Removed Pakistan shortcut (was Ctrl/Cmd+8)
         }
       }
     };
@@ -222,7 +216,6 @@ export default function Home() {
     { id: "validation", label: "Validation", icon: "✅" },
     { id: "analytics", label: "Analytics", icon: "🔍" },
     { id: "comparison", label: "Compare", icon: "🔄" },
-    { id: "pakistan", label: "Pakistan", icon: "🕌" },
   ] as const;
 
   return (
@@ -521,17 +514,7 @@ export default function Home() {
               <ComparisonTool />
             </motion.div>
           )}
-          {currentTab === "pakistan" && (
-            <motion.div
-              key="pakistan"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <PakistanFocus />
-            </motion.div>
-          )}
+          {/* Pakistan tab removed; cities integrated into globe markers */}
         </AnimatePresence>
       </main>
 

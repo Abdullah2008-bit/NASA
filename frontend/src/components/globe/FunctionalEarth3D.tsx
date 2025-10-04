@@ -81,6 +81,14 @@ const MAJOR_LOCATIONS = [
   { name: "Beijing", lat: 39.9042, lon: 116.4074, aqi: 125 },
   { name: "São Paulo", lat: -23.5505, lon: -46.6333, aqi: 72 },
   { name: "Sydney", lat: -33.8688, lon: 151.2093, aqi: 38 },
+  // Pakistan major cities (added after removing dedicated Pakistan tab)
+  { name: "Karachi", lat: 24.8607, lon: 67.0011, aqi: 140 },
+  { name: "Lahore", lat: 31.5204, lon: 74.3587, aqi: 165 },
+  { name: "Islamabad", lat: 33.6844, lon: 73.0479, aqi: 110 },
+  { name: "Faisalabad", lat: 31.418, lon: 73.0791, aqi: 150 },
+  { name: "Peshawar", lat: 34.0151, lon: 71.5249, aqi: 135 },
+  { name: "Quetta", lat: 30.1798, lon: 66.975, aqi: 120 },
+  { name: "Multan", lat: 30.1575, lon: 71.5249, aqi: 155 },
 ];
 
 function LocationMarker({

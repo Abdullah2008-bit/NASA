@@ -6,6 +6,7 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import { SpaceBackground } from "../backgrounds/SpaceBackground";
+import { HeroGlobe } from "./HeroGlobe";
 
 interface CountUpProps {
   end: number;
@@ -99,8 +100,9 @@ export function PrismaHero({ onEnter }: PrismaHeroProps) {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* Space Background */}
+      {/* Layered Backgrounds: space field + subtle rotating globe */}
       <SpaceBackground />
+      <HeroGlobe />
 
       {/* Main Content */}
       <motion.div style={{ opacity, scale }} className="relative z-10">
