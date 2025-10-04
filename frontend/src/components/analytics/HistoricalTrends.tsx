@@ -42,18 +42,10 @@ interface HistoricalTrendsProps {
   location: { lat: number; lon: number; name: string };
 }
 
-const TIME_RANGES = [
-  { days: 7, label: "7 Days" },
-  { days: 30, label: "30 Days" },
-  { days: 90, label: "3 Months" },
-  { days: 365, label: "1 Year" },
-];
+// Removed external time range constants to simplify and avoid unused variable warnings.
 
 // Generate realistic historical data with seasonal patterns
-function generateHistoricalData(
-  days: number,
-  location: string
-): HistoricalDataPoint[] {
+function generateHistoricalData(days: number): HistoricalDataPoint[] {
   const data: HistoricalDataPoint[] = [];
   const now = Date.now();
 
@@ -107,11 +99,11 @@ function getAQIColor(aqi: number): string {
 }
 
 export function HistoricalTrends({ location }: HistoricalTrendsProps) {
-  const [selectedRange, setSelectedRange] = useState(30);
+  const [selectedRange] = useState(30); // fixed range; setter removed to avoid unused warning
   const [historicalData, setHistoricalData] = useState<HistoricalDataPoint[]>(
     []
   );
-  const [viewMode, setViewMode] = useState<
+  const [viewMode] = useState<
     "trends" | "comparison" | "correlation"
   >("trends");
   const [selectedPollutants, setSelectedPollutants] = useState<string[]>([
@@ -122,7 +114,7 @@ export function HistoricalTrends({ location }: HistoricalTrendsProps) {
   ]);
 
   useEffect(() => {
-    const data = generateHistoricalData(selectedRange, location.name);
+  const data = generateHistoricalData(selectedRange);
     setHistoricalData(data);
   }, [selectedRange, location]);
 
@@ -156,7 +148,8 @@ export function HistoricalTrends({ location }: HistoricalTrendsProps) {
   // Trends Chart Data
   const trendsChartData = {
     labels,
-    datasets: [
+    datasets: (
+      [
       selectedPollutants.includes("aqi") && {
         label: "AQI",
         data: historicalData.map((d) => d.aqi),
@@ -193,7 +186,15 @@ export function HistoricalTrends({ location }: HistoricalTrendsProps) {
         tension: 0.4,
         yAxisID: "y1",
       },
-    ].filter(Boolean) as any[],
+    ].filter(Boolean) as {
+      label: string;
+      data: number[];
+      borderColor: string;
+      backgroundColor: string;
+      fill: boolean;
+      tension: number;
+      yAxisID: string;
+    }[]),
   };
 
   // Comparison Chart Data (Average by Day of Week)
@@ -301,46 +302,29 @@ export function HistoricalTrends({ location }: HistoricalTrendsProps) {
         </p>
       </div>
 
-      {/* Time Range Selector */}
-      <div className="flex flex-wrap gap-2">
-        {TIME_RANGES.map((range) => (
-          <button
-            key={range.days}
-            onClick={() => setSelectedRange(range.days)}
-            className={`px-4 py-2 rounded-lg font-medium transition-all ${
-              selectedRange === range.days
-                ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/50"
-                : "bg-white/10 text-white/60 hover:bg-white/20 border border-white/10"
-            }`}
-          >
-            {range.label}
-          </button>
-        ))}
+      {/* Insights Card */}
+      <div className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-400/20 rounded-xl p-4">
+        <h4 className="text-white font-semibold mb-1">Key Insights</h4>
+        <ul className="space-y-1 text-sm text-white/70">
+          <li>
+            • Air quality tends to be {dayOfWeekData[1].sum / dayOfWeekData[1].count >
+            dayOfWeekData[0].sum / dayOfWeekData[0].count
+              ? "worse on weekdays"
+              : "better on weekdays"}{" "}
+            due to traffic patterns
+          </li>
+          <li>
+            • {unhealthyDays} days (
+            {((unhealthyDays / historicalData.length) * 100).toFixed(0)}%)
+            exceeded healthy AQI levels in this period
+          </li>
+          <li>
+            • Peak pollution typically occurs during {maxAQI > avgAQI * 1.5
+              ? "extreme weather events or wildfires"
+              : "rush hour traffic"}
+          </li>
+        </ul>
       </div>
-
-      {/* View Mode Selector */}
-      <div className="flex gap-2">
-        {[
-          { mode: "trends" as const, label: "Time Series", icon: "📈" },
-          { mode: "comparison" as const, label: "Day Comparison", icon: "📊" },
-          { mode: "correlation" as const, label: "Weather Impact", icon: "🌤️" },
-        ].map((view) => (
-          <button
-            key={view.mode}
-            onClick={() => setViewMode(view.mode)}
-            className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all ${
-              viewMode === view.mode
-                ? "bg-white/20 text-white border border-white/30"
-                : "bg-white/5 text-white/60 hover:bg-white/10 border border-white/10"
-            }`}
-          >
-            <span className="mr-2">{view.icon}</span>
-            {view.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Statistics Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}

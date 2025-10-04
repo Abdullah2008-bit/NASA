@@ -90,7 +90,7 @@ export function DataSourcesPanel() {
               NASA Earth Observation Data Sources
             </h3>
             <p className="text-sm text-blue-100 mt-1">
-              Real-time integration with NASA's Earth Science missions
+              Real-time integration with NASA&apos;s Earth Science missions
             </p>
           </div>
           <div className="flex items-center gap-2 bg-green-500/20 px-3 py-1 rounded-full">

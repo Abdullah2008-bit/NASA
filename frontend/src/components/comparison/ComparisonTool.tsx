@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { CitySearch } from "@/components/search/CitySearch";
 import { motion } from "framer-motion";
 
 interface ComparisonLocation {
@@ -80,11 +81,11 @@ export function ComparisonTool() {
     ComparisonLocation[]
   >([PRESET_LOCATIONS[0], PRESET_LOCATIONS[1]]);
 
-  const [availableLocations] = useState(PRESET_LOCATIONS);
+  const [availableLocations, setAvailableLocations] = useState(PRESET_LOCATIONS);
 
   const addLocation = (location: ComparisonLocation) => {
     if (
-      selectedLocations.length < 4 &&
+      selectedLocations.length < 8 &&
       !selectedLocations.find((l) => l.id === location.id)
     ) {
       setSelectedLocations((prev) => [...prev, location]);
@@ -134,23 +135,45 @@ export function ComparisonTool() {
         </p>
       </div>
 
-      {/* Location Selector */}
-      <div className="bg-gradient-to-br from-slate-900 to-slate-800 border border-white/10 rounded-xl p-4">
+      {/* Location Selector + Search */}
+      <div className="bg-gradient-to-br from-slate-900 to-slate-800 border border-white/10 rounded-xl p-4 space-y-4">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-white font-semibold">
-            Select Locations ({selectedLocations.length}/4)
+            Select Locations ({selectedLocations.length}/8)
           </h3>
           <span className="text-xs text-white/50">
-            Click to add, max 4 locations
+            Click to add, max 8 locations
           </span>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <CitySearch
+          compact
+          onSelect={(c) => {
+            const newLoc = {
+              id: `${c.name}-${c.lat}-${c.lon}`,
+              name: c.name,
+              lat: c.lat,
+              lon: c.lon,
+              aqi: Math.floor(Math.random() * 120) + 30, // placeholder until real integrated
+              no2: Math.floor(Math.random() * 50) + 5,
+              o3: Math.floor(Math.random() * 70) + 10,
+              pm25: Math.floor(Math.random() * 80) + 5,
+            };
+            setAvailableLocations((prev) => [newLoc, ...prev.slice(0, 60)]);
+            if (!selectedLocations.find((l) => l.id === newLoc.id)) {
+              if (selectedLocations.length < 8) {
+                setSelectedLocations((p) => [...p, newLoc]);
+              }
+            }
+          }}
+        />
+
+  <div className="flex flex-wrap gap-2 max-h-40 overflow-auto pr-1">
           {availableLocations.map((location) => {
             const isSelected = selectedLocations.find(
               (l) => l.id === location.id
             );
-            const canAdd = selectedLocations.length < 4;
+            const canAdd = selectedLocations.length < 8;
 
             return (
               <button
@@ -178,7 +201,7 @@ export function ComparisonTool() {
       </div>
 
       {/* Comparison Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
+  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4 gap-4">
         {selectedLocations.map((location, idx) => (
           <motion.div
             key={location.id}

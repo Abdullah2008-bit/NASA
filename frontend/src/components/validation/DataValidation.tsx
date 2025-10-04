@@ -93,11 +93,8 @@ function calculateMetrics(
   let sumSquaredError = 0;
   let sumAbsError = 0;
   let sumBias = 0;
-  let sumSatellite = 0;
   let sumGround = 0;
-  let sumSatSquared = 0;
-  let sumGroundSquared = 0;
-  let sumProduct = 0;
+  // removed unused intermediate accumulation variables (sat/ground squared, product)
 
   data.forEach((d) => {
     const sat = d.satellite[pollutant];
@@ -107,11 +104,7 @@ function calculateMetrics(
     sumSquaredError += error * error;
     sumAbsError += Math.abs(error);
     sumBias += error;
-    sumSatellite += sat;
     sumGround += ground;
-    sumSatSquared += sat * sat;
-    sumGroundSquared += ground * ground;
-    sumProduct += sat * ground;
   });
 
   const rmse = Math.sqrt(sumSquaredError / n);
@@ -119,8 +112,8 @@ function calculateMetrics(
   const bias = sumBias / n;
 
   // Calculate R-squared
-  const meanSat = sumSatellite / n;
-  const meanGround = sumGround / n;
+  // meanSat not required for current simplified R^2 approximation
+  const meanGround = sumGround / n; // meanGround remains for R² calculation
   const ssReg = data.reduce((sum, d) => {
     const predictedGround = d.satellite[pollutant];
     return sum + Math.pow(predictedGround - meanGround, 2);
@@ -223,7 +216,7 @@ export function DataValidation({ location }: DataValidationProps) {
         borderWidth: 1,
         padding: 12,
         callbacks: {
-          label: (context: any) => {
+          label: (context: { dataset: { label?: string }; parsed: { x: number; y: number } }) => {
             const label = context.dataset.label || "";
             if (label.includes("1:1")) return label;
             return `${label}: Ground=${context.parsed.x.toFixed(

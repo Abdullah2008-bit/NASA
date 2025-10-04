@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertTriangle, CheckCircle, XCircle, Info } from "lucide-react";
+import { AlertTriangle, XCircle, Info } from "lucide-react";
 import { AlertData } from "@/types/air-quality";
 
 interface AlertBannerProps {

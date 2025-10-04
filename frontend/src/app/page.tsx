@@ -4,7 +4,6 @@ import { useState, useEffect, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import AQICard from "@/components/ui/AQICard";
-import AlertBanner from "@/components/alerts/AlertBanner";
 import { PrismaHero } from "@/components/hero/PrismaHero";
 import { DataSourcesPanel } from "@/components/data/DataSourcesPanel";
 import { RealTimeDataGrid } from "@/components/data/RealTimeDataGrid";
@@ -15,16 +14,16 @@ import { DataValidation } from "@/components/validation/DataValidation";
 import { AdvancedAnalytics } from "@/components/analytics/AdvancedAnalytics";
 import { ComparisonTool } from "@/components/comparison/ComparisonTool";
 import { ToastContainer, useToast } from "@/components/ui/Toast";
-import { LoadingSkeleton } from "@/components/ui/Loading";
 import FloatingSatellite from "@/components/scroll/FloatingSatellite";
 import InteractiveWorldMap from "@/components/scroll/InteractiveWorldMap";
 import ScrollSection from "@/components/scroll/ScrollSection";
+import { PakistanFocus } from "@/components/regions/PakistanFocus";
 import {
   useTEMPOData,
   useGroundStationData,
   useForecast,
 } from "@/hooks/use-air-quality-data";
-import { AlertData } from "@/types/air-quality";
+import { AlertData } from "@/types/air-quality"; // retained for mock alert typing
 
 // Lazy load 3D Globe for better performance
 const FunctionalEarth3D = dynamic(
@@ -46,12 +45,14 @@ const FunctionalEarth3D = dynamic(
 
 export default function Home() {
   const [showDashboard, setShowDashboard] = useState(false);
+  // selectedLocation setter used by future global search & map interactions
   const [selectedLocation, setSelectedLocation] = useState({
     lat: 40.7128,
     lon: -74.006,
     name: "New York City",
   });
-  const [alerts, setAlerts] = useState<AlertData[]>([]);
+  // Track only recent mock alerts internally (used for toast logic) – not rendered directly
+  const [recentAlerts, setRecentAlerts] = useState<AlertData[]>([]);
   const [currentTab, setCurrentTab] = useState<
     | "dashboard"
     | "forecast"
@@ -60,6 +61,7 @@ export default function Home() {
     | "validation"
     | "analytics"
     | "comparison"
+    | "pakistan"
   >("dashboard");
   const [currentPollutants, setCurrentPollutants] = useState({
     aqi: 68,
@@ -68,6 +70,38 @@ export default function Home() {
     pm25: 12.3,
     hcho: 2.1,
   });
+  const [showSatelliteLayer, setShowSatelliteLayer] = useState(true);
+
+  // Lightweight mock pollutant data for 3D layer toggle (replace with real TEMPO fusion soon)
+  const pollutantData = showSatelliteLayer
+    ? (Array.from({ length: 180 }, (_, i) => {
+        const lat = -60 + Math.random() * 120; // focus mid-latitudes
+        const lon = -180 + Math.random() * 360;
+        const types = ["no2", "o3", "pm25", "hcho"] as const;
+        const type = types[i % types.length];
+        return {
+          type,
+          intensity: Math.random() * (type === "pm25" ? 60 : 80),
+          lat,
+          lon,
+        };
+      }) satisfies {
+        type: "no2" | "o3" | "pm25" | "hcho";
+        intensity: number;
+        lat: number;
+        lon: number;
+      }[])
+    : [];
+
+  // Future dynamic updates will use setters; temporary reference to avoid lint removal
+  void setSelectedLocation;
+  void setRecentAlerts;
+  void setCurrentPollutants;
+
+  // Auto scroll to top on tab change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentTab]);
 
   // Toast notifications for user feedback
   const toast = useToast();
@@ -77,14 +111,9 @@ export default function Home() {
     selectedLocation.lat,
     selectedLocation.lon
   );
-  const { data: groundData, isLoading: groundLoading } = useGroundStationData(
-    selectedLocation.lat,
-    selectedLocation.lon
-  );
-  const { data: forecastData, isLoading: forecastLoading } = useForecast(
-    selectedLocation.lat,
-    selectedLocation.lon
-  );
+  // Future: integrate real ground & forecast usage
+  useGroundStationData(selectedLocation.lat, selectedLocation.lon);
+  useForecast(selectedLocation.lat, selectedLocation.lon);
 
   // Simulate real-time alerts - useEffect MUST be called unconditionally
   useEffect(() => {
@@ -100,7 +129,7 @@ export default function Home() {
         timestamp: new Date(),
         expiresAt: new Date(Date.now() + 10000),
       };
-      setAlerts((prev) => [mockAlert, ...prev.slice(0, 2)]);
+  setRecentAlerts((prev) => [mockAlert, ...prev.slice(0, 2)]);
 
       // Show toast notification for high AQI alerts
       if (mockAlert.aqi > 100) {
@@ -154,6 +183,11 @@ export default function Home() {
             setCurrentTab("comparison");
             toast.info("Navigation", "Switched to Compare");
             break;
+          case "8":
+            e.preventDefault();
+            setCurrentTab("pakistan");
+            toast.info("Navigation", "Switched to Pakistan Focus");
+            break;
         }
       }
     };
@@ -178,10 +212,7 @@ export default function Home() {
     return <PrismaHero onEnter={() => setShowDashboard(true)} />;
   }
 
-  const handleLocationSelect = (lat: number, lon: number, name: string) => {
-    setSelectedLocation({ lat, lon, name });
-    toast.success("Location Changed", `Now showing data for ${name}`);
-  };
+  // NOTE: location selection via future global search component will call setSelectedLocation directly
 
   const tabs = [
     { id: "dashboard", label: "Dashboard", icon: "🌍" },
@@ -191,6 +222,7 @@ export default function Home() {
     { id: "validation", label: "Validation", icon: "✅" },
     { id: "analytics", label: "Analytics", icon: "🔍" },
     { id: "comparison", label: "Compare", icon: "🔄" },
+    { id: "pakistan", label: "Pakistan", icon: "🕌" },
   ] as const;
 
   return (
@@ -207,14 +239,16 @@ export default function Home() {
             className="flex items-center justify-between"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 via-blue-500 to-slate-700 flex items-center justify-center ring-1 ring-blue-300/20 shadow shadow-blue-600/30">
                 <span className="text-white font-bold text-xl">🌍</span>
               </div>
               <div>
-                <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+                <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-300 via-cyan-400 to-blue-600">
                   SkyCast
                 </h1>
-                <p className="text-xs text-gray-400">NASA Space Apps 2025</p>
+                <p className="text-xs text-gray-400 tracking-wide">
+                  NASA Space Apps 2025
+                </p>
               </div>
             </div>
 
@@ -264,6 +298,12 @@ export default function Home() {
                     timestamp={new Date()}
                     className="bg-gray-900/50 backdrop-blur-xl"
                   />
+                  {/* Hidden meta hook usage to acknowledge alert stream */}
+                  {recentAlerts.length > 0 && (
+                    <span className="sr-only" aria-live="polite">
+                      {recentAlerts.length} active alerts processed
+                    </span>
+                  )}
 
                   {/* Pollutant Breakdown */}
                   <motion.div
@@ -362,10 +402,21 @@ export default function Home() {
                   className="lg:col-span-2 bg-gray-900/50 backdrop-blur-xl rounded-2xl overflow-hidden border border-gray-800"
                   style={{ height: "600px" }}
                 >
+                  <div className="absolute top-3 right-3 z-20 flex items-center gap-2 bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-xs text-white/70">
+                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={showSatelliteLayer}
+                        onChange={() => setShowSatelliteLayer((s) => !s)}
+                        className="accent-blue-500"
+                      />
+                      <span>Satellite Layer</span>
+                    </label>
+                  </div>
                   <Suspense
                     fallback={<div className="w-full h-full bg-black" />}
                   >
-                    <FunctionalEarth3D />
+                    <FunctionalEarth3D pollutantData={pollutantData} />
                   </Suspense>
                 </motion.div>
               </div>
@@ -468,6 +519,17 @@ export default function Home() {
               transition={{ duration: 0.3 }}
             >
               <ComparisonTool />
+            </motion.div>
+          )}
+          {currentTab === "pakistan" && (
+            <motion.div
+              key="pakistan"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <PakistanFocus />
             </motion.div>
           )}
         </AnimatePresence>

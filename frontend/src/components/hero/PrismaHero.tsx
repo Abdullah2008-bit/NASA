@@ -52,43 +52,35 @@ interface PrismaHeroProps {
   onEnter: () => void;
 }
 
+// Hoist initial streams so the activation effect doesn't depend on mutable state
+const INITIAL_STREAMS = [
+  { id: 1, source: "TEMPO", value: 0, max: 2500, unit: "km²", active: false },
+  { id: 2, source: "MERRA-2", value: 0, max: 10000, unit: "stations", active: false },
+  { id: 3, source: "GOES-R", value: 0, max: 15, unit: "min", active: false },
+  { id: 4, source: "OpenAQ", value: 0, max: 96, unit: "% accuracy", active: false },
+];
+
 export function PrismaHero({ onEnter }: PrismaHeroProps) {
   const { scrollY } = useScroll();
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
   const scale = useTransform(scrollY, [0, 300], [1, 0.8]);
 
-  const [dataStreams, setDataStreams] = useState([
-    { id: 1, source: "TEMPO", value: 0, max: 2500, unit: "km²", active: false },
-    {
-      id: 2,
-      source: "MERRA-2",
-      value: 0,
-      max: 10000,
-      unit: "stations",
-      active: false,
-    },
-    { id: 3, source: "GOES-R", value: 0, max: 15, unit: "min", active: false },
-    {
-      id: 4,
-      source: "OpenAQ",
-      value: 0,
-      max: 96,
-      unit: "% accuracy",
-      active: false,
-    },
-  ]);
+  const [dataStreams, setDataStreams] = useState(INITIAL_STREAMS);
 
   useEffect(() => {
-    // Activate data streams one by one
-    dataStreams.forEach((stream, index) => {
+    // Activate data streams one by one (no dependency on dataStreams state itself)
+    const timeouts = INITIAL_STREAMS.map((stream, index) =>
       setTimeout(() => {
         setDataStreams((prev) =>
           prev.map((s) =>
             s.id === stream.id ? { ...s, active: true, value: s.max } : s
           )
         );
-      }, index * 300);
-    });
+      }, index * 300)
+    );
+    return () => {
+      timeouts.forEach((t) => clearTimeout(t));
+    };
   }, []);
 
   return (
@@ -108,13 +100,13 @@ export function PrismaHero({ onEnter }: PrismaHeroProps) {
                 animate={{ opacity: 1, x: 0 }}
                 className="flex items-center gap-3"
               >
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/50">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-slate-700 flex items-center justify-center shadow-lg shadow-blue-600/40 ring-1 ring-blue-300/20">
                   <span className="text-white font-bold text-xl">S</span>
                 </div>
                 <div>
                   <div className="text-white font-bold text-xl tracking-tight">
                     Sky
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-cyan-400 to-blue-500">
                       Cast
                     </span>
                   </div>
@@ -192,7 +184,7 @@ export function PrismaHero({ onEnter }: PrismaHeroProps) {
             >
               <span className="text-white">Predicting</span>
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-purple-400 animate-gradient">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-700 animate-gradient">
                 Cleaner, Safer Skies
               </span>
             </motion.h1>
@@ -206,7 +198,7 @@ export function PrismaHero({ onEnter }: PrismaHeroProps) {
             >
               Professional air quality forecasting powered by{" "}
               <span className="text-white font-semibold">
-                NASA's Earth observation satellites
+                NASA&apos;s Earth observation satellites
               </span>
               , advanced machine learning, and cloud computing
             </motion.p>
@@ -282,7 +274,7 @@ export function PrismaHero({ onEnter }: PrismaHeroProps) {
                       className="relative group"
                     >
                       {/* Glow Effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
 
                       <div className="relative">
                         <div className="text-sm text-white/50 mb-2 font-medium tracking-wide">
@@ -328,7 +320,7 @@ export function PrismaHero({ onEnter }: PrismaHeroProps) {
 
               {/* Decorative Elements */}
               <div className="absolute -top-4 -right-4 w-24 h-24 bg-blue-500/20 rounded-full blur-3xl" />
-              <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl" />
+              <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-cyan-500/20 rounded-full blur-3xl" />
             </motion.div>
 
             {/* Trusted By - GitHub style */}

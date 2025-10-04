@@ -127,6 +127,56 @@ class OpenAQService:
             "source": "OpenAQ",
         }
 
+    async def search_cities(
+        self,
+        query: Optional[str] = None,
+        country: Optional[str] = None,
+        limit: int = 20,
+    ) -> List[Dict[str, Any]]:
+        """Search available locations (cities/stations) via OpenAQ.
+
+        Filters:
+          - query: part of location name (case-insensitive)
+          - country: 2-letter ISO code
+        Returns simplified list for UI selection.
+        """
+        params = {
+            "limit": limit,
+            "sort": "desc",
+            "order_by": "lastUpdated",
+        }
+        if country:
+            params["country"] = country.upper()
+        if query:
+            params["location"] = query  # OpenAQ matches location names
+
+        try:
+            resp = await self.client.get("/locations", params=params)
+            resp.raise_for_status()
+        except httpx.HTTPError as e:
+            return []
+        data = resp.json().get("results", [])
+        results = []
+        for r in data:
+            coords = r.get("coordinates") or {}
+            results.append({
+                "id": r.get("id"),
+                "name": r.get("name"),
+                "country": r.get("country"),
+                "city": r.get("city"),
+                "lat": coords.get("latitude"),
+                "lon": coords.get("longitude"),
+            })
+        # De-duplicate by name + country keeping first
+        seen = set()
+        unique = []
+        for item in results:
+            key = (item["name"], item["country"])
+            if key not in seen and item["lat"] is not None and item["lon"] is not None:
+                seen.add(key)
+                unique.append(item)
+        return unique
+
     def _haversine(self, lat1, lon1, lat2, lon2) -> float:
         if None in (lat1, lon1, lat2, lon2):
             return 0.0

@@ -33,3 +33,16 @@ async def get_openaq_data(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/cities")
+async def search_cities(
+    query: Optional[str] = Query(None, description="Partial city/location name"),
+    country: Optional[str] = Query(None, description="ISO 2-letter country code"),
+    limit: int = Query(20, ge=1, le=50),
+):
+    """Search cities/locations available in OpenAQ for user selection."""
+    try:
+        results = await openaq_service.search_cities(query=query, country=country, limit=limit)
+        return {"success": True, "results": results}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+

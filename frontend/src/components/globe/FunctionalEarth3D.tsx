@@ -18,7 +18,7 @@ import {
   Preload,
 } from "@react-three/drei";
 import * as THREE from "three";
-import { motion, AnimatePresence } from "framer-motion";
+// (framer-motion removed: no direct usage in this component)
 
 // Error Boundary for 3D content
 class ThreeErrorBoundary extends Component<
@@ -34,7 +34,7 @@ class ThreeErrorBoundary extends Component<
     return { hasError: true };
   }
 
-  componentDidCatch(error: Error, errorInfo: any) {
+  componentDidCatch(error: Error) {
     console.warn("3D rendering error (non-critical):", error.message);
   }
 
@@ -57,8 +57,15 @@ interface PollutantDataPoint {
   timestamp?: string;
 }
 
+/**
+ * Props for the interactive 3D Earth component.
+ * pollutantData: optional particle-style pollutant points (e.g. TEMPO). If empty or omitted, layer is hidden.
+ * selectedPollutant: filter mode; 'all' shows every point type.
+ * onLocationClick: callback when a predefined marker or arbitrary globe coordinate is clicked.
+ * showLocations: toggles static major location markers.
+ */
 interface Earth3DGlobeProps {
-  pollutantData?: PollutantDataPoint[];
+  pollutantData?: PollutantDataPoint[]; // safe to pass [] for none
   selectedPollutant?: "no2" | "o3" | "pm25" | "hcho" | "all";
   onLocationClick?: (lat: number, lon: number, location: string) => void;
   showLocations?: boolean;
@@ -213,24 +220,18 @@ function Earth({
     lon: number;
     name: string;
   } | null>(null);
-  const [hoverPoint, setHoverPoint] = useState<{
-    lat: number;
-    lon: number;
-  } | null>(null);
+  // hoverPoint removed (unused state)
 
   // Load Earth textures with error handling
-  const [texturesLoaded, setTexturesLoaded] = useState(false);
-  const texture = useTexture(
-    {
-      map: "https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg",
-      bumpMap: "https://unpkg.com/three-globe/example/img/earth-topology.png",
-      specularMap: "https://unpkg.com/three-globe/example/img/earth-water.png",
-    },
-    () => setTexturesLoaded(true)
-  );
+  // texturesLoaded flag removed (not used after load)
+  const texture = useTexture({
+    map: "https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg",
+    bumpMap: "https://unpkg.com/three-globe/example/img/earth-topology.png",
+    specularMap: "https://unpkg.com/three-globe/example/img/earth-water.png",
+  });
 
   // Handle Earth click
-  const handleEarthClick = (event: any) => {
+  const handleEarthClick = (event: { stopPropagation: () => void; intersections?: { point: THREE.Vector3 }[] }) => {
     event.stopPropagation();
 
     if (!earthRef.current) return;
@@ -282,8 +283,6 @@ function Earth({
         ref={earthRef}
         args={[2, 64, 64]}
         onClick={handleEarthClick}
-        onPointerOver={() => setHoverPoint({ lat: 0, lon: 0 })}
-        onPointerOut={() => setHoverPoint(null)}
       >
         <meshPhongMaterial
           map={texture.map}
@@ -430,7 +429,7 @@ export default function Earth3DGlobe(props: Earth3DGlobeProps) {
             ].map((layer) => (
               <button
                 key={layer.id}
-                onClick={() => setSelectedPollutant(layer.id as any)}
+          onClick={() => setSelectedPollutant(layer.id as typeof selectedPollutant)}
                 className={`w-full px-3 py-2 rounded-lg text-left text-sm transition-all ${
                   selectedPollutant === layer.id
                     ? "bg-white/20 text-white border border-white/30"

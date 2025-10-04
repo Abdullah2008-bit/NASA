@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 // Correct relative path: ui -> components -> (.. to components) -> (.. to src) -> lib
-import { getAQIColor, getAQILevel, getAQIGradient } from "../../lib/utils";
+import { getAQILevel, getAQIGradient } from "../../lib/utils";
 
 interface AQICardProps {
   aqi: number;
