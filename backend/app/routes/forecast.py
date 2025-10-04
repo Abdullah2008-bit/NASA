@@ -14,8 +14,12 @@ class ForecastRequest(BaseModel):
     lon: float
     hours: int = 24  # 6, 12, or 24 hours
 
-@router.post("/")
-async def get_forecast(request: ForecastRequest):
+@router.get("/")
+async def get_forecast(
+    lat: float = Query(..., description="Latitude"),
+    lon: float = Query(..., description="Longitude"),
+    hours: int = Query(24, description="Forecast hours (6, 12, or 24)")
+):
     """
     Generate AI-powered AQI forecast for 6h/12h/24h
     
@@ -32,7 +36,7 @@ async def get_forecast(request: ForecastRequest):
         predictions = []
         base_aqi = 55
         
-        for hour in range(1, request.hours + 1):
+        for hour in range(1, hours + 1):
             predictions.append({
                 "hour": hour,
                 "timestamp": f"2025-10-04T{12 + hour:02d}:00:00Z",
@@ -45,8 +49,8 @@ async def get_forecast(request: ForecastRequest):
             "success": True,
             "data": {
                 "location": {
-                    "lat": request.lat,
-                    "lon": request.lon,
+                    "lat": lat,
+                    "lon": lon,
                     "name": "Sample Location"
                 },
                 "predictions": predictions,
@@ -60,6 +64,11 @@ async def get_forecast(request: ForecastRequest):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/")
+async def get_forecast_post(request: ForecastRequest):
+    """POST version for complex requests"""
+    return await get_forecast(request.lat, request.lon, request.hours)
 
 @router.get("/current")
 async def get_current_aqi(

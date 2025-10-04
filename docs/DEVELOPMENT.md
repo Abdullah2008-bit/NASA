@@ -1,4 +1,4 @@
-# SkyCast Development Guide
+<!-- # SkyCast Development Guide
 
 ## Setup Instructions
 
@@ -137,4 +137,4 @@ pytest --cov
 - [TEMPO Data](https://tempo.si.edu/)
 - [OpenAQ API](https://docs.openaq.org/)
 - [Next.js Docs](https://nextjs.org/docs)
-- [FastAPI Docs](https://fastapi.tiangolo.com/)
+- [FastAPI Docs](https://fastapi.tiangolo.com/) -->
