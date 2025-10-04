@@ -8,6 +8,7 @@ import { PrismaHero } from "@/components/hero/PrismaHero";
 import { DataSourcesPanel } from "@/components/data/DataSourcesPanel";
 import { RealTimeDataGrid } from "@/components/data/RealTimeDataGrid";
 import { AlertsSystem } from "@/components/alerts/AlertsSystem";
+import { LocationSelector } from "@/components/location/LocationSelector";
 import { ForecastingEngine } from "@/components/forecasting/ForecastingEngine";
 import { HistoricalTrends } from "@/components/analytics/HistoricalTrends";
 import { DataValidation } from "@/components/validation/DataValidation";
@@ -61,13 +62,13 @@ export default function Home() {
     | "analytics"
     | "comparison"
   >("dashboard");
-  const [currentPollutants, setCurrentPollutants] = useState({
+  const currentPollutants = {
     aqi: 68,
     no2: 15.2,
     o3: 45.8,
     pm25: 12.3,
     hcho: 2.1,
-  });
+  };
   const [showSatelliteLayer, setShowSatelliteLayer] = useState(true);
 
   // Lightweight mock pollutant data for 3D layer toggle (replace with real TEMPO fusion soon)
@@ -91,10 +92,7 @@ export default function Home() {
       }[])
     : [];
 
-  // Future dynamic updates will use setters; temporary reference to avoid lint removal
-  void setSelectedLocation;
-  void setRecentAlerts;
-  void setCurrentPollutants;
+  // Selected location now controlled via LocationSelector component
 
   // Auto scroll to top on tab change
   useEffect(() => {
@@ -242,6 +240,15 @@ export default function Home() {
                 <p className="text-xs text-gray-400 tracking-wide">
                   NASA Space Apps 2025
                 </p>
+              </div>
+              <div className="hidden lg:block pl-6 border-l border-white/10 ml-4">
+                <LocationSelector
+                  value={selectedLocation}
+                  onChange={(loc) => {
+                    setSelectedLocation(loc);
+                    // Optionally trigger toast
+                  }}
+                />
               </div>
             </div>
 
