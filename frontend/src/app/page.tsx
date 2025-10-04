@@ -14,6 +14,7 @@ import { HistoricalTrends } from "@/components/analytics/HistoricalTrends";
 import { DataValidation } from "@/components/validation/DataValidation";
 import { AdvancedAnalytics } from "@/components/analytics/AdvancedAnalytics";
 import { ComparisonTool } from "@/components/comparison/ComparisonTool";
+import { HealthAdvisor } from "@/components/health/HealthAdvisor";
 import { ToastContainer, useToast } from "@/components/ui/Toast";
 import FloatingSatellite from "@/components/scroll/FloatingSatellite";
 import InteractiveWorldMap from "@/components/scroll/InteractiveWorldMap";
@@ -61,6 +62,7 @@ export default function Home() {
     | "validation"
     | "analytics"
     | "comparison"
+    | "health"
   >("dashboard");
   const currentPollutants = {
     aqi: 68,
@@ -179,6 +181,11 @@ export default function Home() {
             setCurrentTab("comparison");
             toast.info("Navigation", "Switched to Compare");
             break;
+          case "8":
+            e.preventDefault();
+            setCurrentTab("health");
+            toast.info("Navigation", "Switched to Health Advisor");
+            break;
           // Removed Pakistan shortcut (was Ctrl/Cmd+8)
         }
       }
@@ -214,6 +221,7 @@ export default function Home() {
     { id: "validation", label: "Validation", icon: "✅" },
     { id: "analytics", label: "Analytics", icon: "🔍" },
     { id: "comparison", label: "Compare", icon: "🔄" },
+    { id: "health", label: "Health", icon: "❤️" },
   ] as const;
 
   return (
@@ -519,6 +527,17 @@ export default function Home() {
               transition={{ duration: 0.3 }}
             >
               <ComparisonTool />
+            </motion.div>
+          )}
+          {currentTab === "health" && (
+            <motion.div
+              key="health"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <HealthAdvisor currentAQI={currentPollutants.aqi} />
             </motion.div>
           )}
           {/* Pakistan tab removed; cities integrated into globe markers */}
