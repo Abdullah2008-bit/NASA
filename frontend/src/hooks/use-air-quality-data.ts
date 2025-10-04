@@ -1,11 +1,12 @@
 import useSWR from "swr";
-import apiClient from "@/lib/api-client";
+// Relative imports to avoid alias resolution issue on Vercel
+import apiClient from "../lib/../lib/api-client";
 import {
   TEMPOData,
   GroundStationData,
   WeatherData,
   ForecastData,
-} from "@/types/air-quality";
+} from "../types/air-quality";
 
 const fetcher = (url: string) => apiClient.get(url).then((res) => res.data);
 

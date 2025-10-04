@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
+    "prebuild": "node scripts/diag-paths.cjs",
     "start": "next start",
     "lint": "eslint"
   },

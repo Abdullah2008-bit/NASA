@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { getAQIColor, getAQILevel, getAQIGradient } from "@/lib/utils";
+// Using relative import to avoid path alias resolution issue on Vercel
+import { getAQIColor, getAQILevel, getAQIGradient } from "../../lib/utils";
 
 interface AQICardProps {
   aqi: number;
