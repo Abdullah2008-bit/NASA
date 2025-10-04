@@ -1,0 +1,12 @@
+{
+  "name": "SkyCast – NASA Space Apps Air Quality Intelligence",
+  "short_name": "SkyCast",
+  "description": "Real-time global air quality intelligence, NASA TEMPO insights, anomaly detection and forecasting.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000814",
+  "theme_color": "#050814",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "128x128", "type": "image/svg+xml" }
+  ]
+}
