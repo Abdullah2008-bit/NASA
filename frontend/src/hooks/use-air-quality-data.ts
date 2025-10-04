@@ -1,6 +1,7 @@
 import useSWR from "swr";
 // Relative imports to avoid alias resolution issue on Vercel
-import apiClient from "../lib/../lib/api-client";
+// Proper relative path: hooks -> src -> lib
+import apiClient from "../lib/api-client";
 import {
   TEMPOData,
   GroundStationData,
