@@ -69,6 +69,7 @@ interface Earth3DGlobeProps {
   selectedPollutant?: "no2" | "o3" | "pm25" | "hcho" | "all";
   onLocationClick?: (lat: number, lon: number, location: string) => void;
   showLocations?: boolean;
+  focusLocation?: { lat: number; lon: number; name: string } | null;
 }
 
 // Major cities for location markers
@@ -220,6 +221,7 @@ function Earth({
   selectedPollutant = "all",
   onLocationClick,
   showLocations = true,
+  focusLocation = null,
 }: Earth3DGlobeProps) {
   const earthRef = useRef<THREE.Mesh>(null);
   const atmosphereRef = useRef<THREE.Mesh>(null);
@@ -399,6 +401,37 @@ function Earth({
             }
           />
         ))}
+      {focusLocation &&
+        (() => {
+          const phi = (90 - focusLocation.lat) * (Math.PI / 180);
+          const theta = (focusLocation.lon + 180) * (Math.PI / 180);
+          const r = 2.12;
+          const x = -(r * Math.sin(phi) * Math.cos(theta));
+          const y = r * Math.cos(phi);
+          const z = r * Math.sin(phi) * Math.sin(theta);
+          return (
+            <group position={[x, y, z]}>
+              <mesh>
+                <sphereGeometry args={[0.055, 24, 24]} />
+                <meshBasicMaterial color="#ffffff" />
+              </mesh>
+              <mesh rotation={[Math.PI / 2, 0, 0]}>
+                <ringGeometry args={[0.07, 0.085, 48]} />
+                <meshBasicMaterial
+                  color="#ffffff"
+                  transparent
+                  opacity={0.85}
+                  side={THREE.DoubleSide}
+                />
+              </mesh>
+              <Html distanceFactor={10} position={[0, 0.09, 0]}>
+                <div className="px-2 py-1 rounded bg-white text-black text-[10px] font-medium shadow-md whitespace-nowrap">
+                  {focusLocation.name}
+                </div>
+              </Html>
+            </group>
+          );
+        })()}
     </group>
   );
 }
@@ -420,85 +453,91 @@ export default function Earth3DGlobe(props: Earth3DGlobeProps) {
 
   return (
     <div className="relative w-full h-full bg-gradient-to-b from-slate-950 to-black">
-      {/* Pollutant Layer Controls */}
-      <div className="absolute top-4 left-4 z-10 space-y-2">
-        <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-xl p-4">
-          <div className="text-xs text-white/60 mb-3 font-semibold uppercase tracking-wide">
-            TEMPO Data Layers
-          </div>
-          <div className="space-y-2">
-            {[
-              { id: "all", name: "All Pollutants", color: "#8b5cf6" },
-              { id: "no2", name: "NO₂ (Nitrogen Dioxide)", color: "#f59e0b" },
-              { id: "o3", name: "O₃ (Ozone)", color: "#3b82f6" },
-              { id: "pm25", name: "PM2.5 (Particulates)", color: "#ef4444" },
-              { id: "hcho", name: "HCHO (Formaldehyde)", color: "#10b981" },
-            ].map((layer) => (
-              <button
-                key={layer.id}
-                onClick={() =>
-                  setSelectedPollutant(layer.id as typeof selectedPollutant)
-                }
-                className={`w-full px-3 py-2 rounded-lg text-left text-sm transition-all ${
-                  selectedPollutant === layer.id
-                    ? "bg-white/20 text-white border border-white/30"
-                    : "bg-white/5 text-white/60 hover:bg-white/10 border border-transparent"
-                }`}
-              >
+      {/* Compact Legend & Layer Control (Top Right) */}
+      <div className="absolute top-3 right-3 z-20">
+        <details className="group open:backdrop-blur-xl">
+          <summary className="list-none cursor-pointer select-none flex items-center gap-2 bg-black/60 hover:bg-black/70 border border-white/10 rounded-lg px-3 py-2 text-[11px] text-white/70 font-medium">
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-gradient-to-r from-green-400 via-yellow-400 to-red-500 animate-pulse" />
+              Layers / Legend
+            </span>
+            <span className="ml-1 text-white/40 group-open:rotate-180 transition-transform">
+              ▾
+            </span>
+          </summary>
+          <div className="mt-2 w-64 bg-black/70 backdrop-blur-xl border border-white/10 rounded-xl p-3 space-y-4 shadow-xl">
+            <div>
+              <div className="text-[10px] text-white/50 font-semibold uppercase tracking-wide mb-2">
+                TEMPO Layers
+              </div>
+              <div className="space-y-1 max-h-44 overflow-auto pr-1">
+                {[
+                  { id: "all", name: "All Pollutants", color: "#8b5cf6" },
+                  { id: "no2", name: "NO₂", color: "#f59e0b" },
+                  { id: "o3", name: "O₃", color: "#3b82f6" },
+                  { id: "pm25", name: "PM2.5", color: "#ef4444" },
+                  { id: "hcho", name: "HCHO", color: "#10b981" },
+                ].map((layer) => (
+                  <button
+                    key={layer.id}
+                    onClick={() =>
+                      setSelectedPollutant(layer.id as typeof selectedPollutant)
+                    }
+                    className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-[11px] transition-colors border ${
+                      selectedPollutant === layer.id
+                        ? "bg-white/15 text-white border-white/30"
+                        : "bg-white/5 text-white/60 hover:bg-white/10 border-transparent"
+                    }`}
+                  >
+                    <span
+                      className="w-2.5 h-2.5 rounded-full"
+                      style={{ backgroundColor: layer.color }}
+                    />
+                    <span className="truncate">{layer.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <div className="text-[10px] text-white/50 font-semibold uppercase tracking-wide mb-1">
+                AQI
+              </div>
+              <div className="space-y-1 text-[10px]">
                 <div className="flex items-center gap-2">
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: layer.color }}
-                  />
-                  <span className="font-medium">{layer.name}</span>
+                  <span className="w-2 h-2 rounded-full bg-green-500" /> Good
+                  0–50
                 </div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Legend */}
-        <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-xl p-4">
-          <div className="text-xs text-white/60 mb-2 font-semibold uppercase tracking-wide">
-            AQI Levels
-          </div>
-          <div className="space-y-1 text-xs">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-green-500" />
-              <span className="text-white/80">Good (0-50)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-yellow-500" />
-              <span className="text-white/80">Moderate (51-100)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-500" />
-              <span className="text-white/80">Unhealthy (101+)</span>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-yellow-500" />{" "}
+                  Moderate 51–100
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-red-500" /> Unhealthy
+                  101+
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </details>
       </div>
 
       {/* Instructions */}
-      <div className="absolute bottom-4 left-4 z-10">
-        <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-xl px-4 py-2 text-xs text-white/60">
-          <div className="flex items-center gap-2">
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            Click and drag to rotate • Scroll to zoom • Click markers for
-            details
-          </div>
+      <div className="absolute bottom-3 left-3 z-10">
+        <div className="bg-black/55 backdrop-blur-xl border border-white/10 rounded-lg px-3 py-1.5 text-[10px] text-white/50 flex items-center gap-2">
+          <svg
+            className="w-3.5 h-3.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          Drag • Scroll • Click markers
         </div>
       </div>
 

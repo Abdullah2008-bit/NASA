@@ -8,10 +8,14 @@ interface LocationSelectorProps {
   compact?: boolean;
 }
 
-export function LocationSelector({ value, onChange, compact = false }: LocationSelectorProps) {
+export function LocationSelector({
+  value,
+  onChange,
+  compact = false,
+}: LocationSelectorProps) {
   const [country, setCountry] = useState<string>("");
   const filteredCities = useMemo<CityMeta[]>(() => {
-    return country ? CITIES.filter(c => c.country === country) : CITIES;
+    return country ? CITIES.filter((c) => c.country === country) : CITIES;
   }, [country]);
 
   return (
@@ -19,27 +23,39 @@ export function LocationSelector({ value, onChange, compact = false }: LocationS
       <div className="flex gap-2">
         <select
           value={country}
-            onChange={(e) => setCountry(e.target.value)}
+          onChange={(e) => setCountry(e.target.value)}
           className="bg-white/5 border border-white/10 rounded-md px-2 py-1 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 flex-1"
         >
           <option value="">All Countries</option>
-          {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+          {COUNTRIES.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
         </select>
         <select
           value={value.name}
           onChange={(e) => {
-            const city = CITIES.find(c => c.name === e.target.value);
-            if (city) onChange({ lat: city.lat, lon: city.lon, name: `${city.name}, ${city.country}` });
+            const city = CITIES.find((c) => c.name === e.target.value);
+            if (city)
+              onChange({
+                lat: city.lat,
+                lon: city.lon,
+                name: `${city.name}, ${city.country}`,
+              });
           }}
           className="bg-white/5 border border-white/10 rounded-md px-2 py-1 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 flex-1"
         >
-          {filteredCities.map(c => (
-            <option key={c.name} value={c.name}>{c.name}</option>
+          {filteredCities.map((c) => (
+            <option key={c.name} value={c.name}>
+              {c.name}
+            </option>
           ))}
         </select>
       </div>
       <div className="text-[10px] text-white/40">
-        {filteredCities.length} cities • Pakistan cities included in global list.
+        {filteredCities.length} cities • Pakistan cities included in global
+        list.
       </div>
     </div>
   );

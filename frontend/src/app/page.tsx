@@ -16,6 +16,7 @@ import { AdvancedAnalytics } from "@/components/analytics/AdvancedAnalytics";
 import { ComparisonTool } from "@/components/comparison/ComparisonTool";
 import { HealthAdvisor } from "@/components/health/HealthAdvisor";
 import { ToastContainer, useToast } from "@/components/ui/Toast";
+import { computeAQI } from "@/lib/utils";
 import FloatingSatellite from "@/components/scroll/FloatingSatellite";
 import InteractiveWorldMap from "@/components/scroll/InteractiveWorldMap";
 import ScrollSection from "@/components/scroll/ScrollSection";
@@ -64,13 +65,13 @@ export default function Home() {
     | "comparison"
     | "health"
   >("dashboard");
-  const currentPollutants = {
-    aqi: 68,
-    no2: 15.2,
-    o3: 45.8,
-    pm25: 12.3,
-    hcho: 2.1,
-  };
+  const [currentPollutants, setCurrentPollutants] = useState({
+    aqi: 0,
+    no2: 0,
+    o3: 0,
+    pm25: 0,
+    hcho: 0,
+  });
   const [showSatelliteLayer, setShowSatelliteLayer] = useState(true);
 
   // Lightweight mock pollutant data for 3D layer toggle (replace with real TEMPO fusion soon)
@@ -112,6 +113,26 @@ export default function Home() {
   // Future: integrate real ground & forecast usage
   useGroundStationData(selectedLocation.lat, selectedLocation.lon);
   useForecast(selectedLocation.lat, selectedLocation.lon);
+
+  // Derive pollutant snapshot from latest TEMPO sample (placeholder until fused dataset)
+  useEffect(() => {
+    if (tempoData && tempoData.length) {
+      // Choose the most recent reading (assumed last or sort by timestamp)
+      const latest = [...tempoData].sort(
+        (a, b) =>
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      )[0];
+      const pm25 = latest.pm ?? latest.aerosolIndex * 10; // heuristic fallback
+      const next = {
+        no2: latest.no2,
+        o3: latest.o3,
+        pm25,
+        hcho: latest.hcho,
+      };
+      const aqi = computeAQI({ pm25: next.pm25, o3: next.o3, no2: next.no2 });
+      setCurrentPollutants({ aqi, ...next });
+    }
+  }, [tempoData]);
 
   // Simulate real-time alerts - useEffect MUST be called unconditionally
   useEffect(() => {
@@ -424,7 +445,14 @@ export default function Home() {
                   <Suspense
                     fallback={<div className="w-full h-full bg-black" />}
                   >
-                    <FunctionalEarth3D pollutantData={pollutantData} />
+                    <FunctionalEarth3D
+                      pollutantData={pollutantData}
+                      focusLocation={selectedLocation}
+                      onLocationClick={(lat, lon, name) =>
+                        setSelectedLocation({ lat, lon, name })
+                      }
+                      showLocations={true}
+                    />
                   </Suspense>
                 </motion.div>
               </div>
