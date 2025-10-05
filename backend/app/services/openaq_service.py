@@ -1,14 +1,3 @@
-"""OpenAQ Ground Station Data Service
-Fetches real-time air quality measurements from ground sensors using OpenAQ API.
-
-Data Source: https://api.openaq.org/v2
-
-Features:
- - Nearest stations by lat/lon & radius
- - Parameter filtering (pm25, pm10, o3, no2, so2, co, bc)
- - Consolidated measurements with basic statistics
- - Graceful degradation on partial failures
-"""
 from __future__ import annotations
 
 import os

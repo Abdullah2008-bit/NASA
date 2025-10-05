@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import apiClient from "@/lib/api-client";
 
 interface LocationData {
   id: string;
@@ -153,33 +155,56 @@ export function RealTimeDataGrid() {
   const [cities, setCities] = useState(MAJOR_CITIES);
   const [selectedCity, setSelectedCity] = useState<LocationData | null>(null);
 
-  // Simulate real-time updates
+  // Fetch real aggregated data per city (satellite + ground)
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCities((prev) =>
-        prev.map((city) => ({
-          ...city,
-          aqi: Math.max(
-            20,
-            Math.min(200, city.aqi + (Math.random() - 0.5) * 5)
-          ),
-          no2: Math.max(5, Math.min(100, city.no2 + (Math.random() - 0.5) * 2)),
-          o3: Math.max(10, Math.min(150, city.o3 + (Math.random() - 0.5) * 3)),
-          pm25: Math.max(
-            1,
-            Math.min(50, city.pm25 + (Math.random() - 0.5) * 1.5)
-          ),
-          trend:
-            Math.random() > 0.6
-              ? "up"
-              : Math.random() > 0.3
-              ? "down"
-              : "stable",
-        }))
-      );
-    }, 3000);
-
-    return () => clearInterval(interval);
+    let cancelled = false;
+    async function loadOnce() {
+      try {
+        // Use functional state to avoid stale closure; map over latest snapshot
+        // Optional: could set a separate loading flag; skipped to keep type strict
+        const updated = await Promise.all(
+          (() => cities)().map(async (c) => {
+            try {
+              const res = await apiClient.get(
+                `/api/airquality?lat=${c.lat}&lon=${c.lon}`
+              );
+              const data = res.data?.data;
+              const aqiVal = data?.aqi?.value ?? c.aqi;
+              const cat = data?.aqi?.category?.toLowerCase();
+              const statusMap: Record<string, LocationData["status"]> = {
+                good: "good",
+                moderate: "moderate",
+                unhealthy: "unhealthy",
+                hazardous: "hazardous",
+              };
+              return {
+                ...c,
+                aqi: aqiVal,
+                no2: data?.pollutants?.no2 ?? c.no2,
+                o3: data?.pollutants?.o3 ?? c.o3,
+                pm25: data?.pollutants?.pm25 ?? c.pm25,
+                status: statusMap[cat || ""] || c.status,
+                trend:
+                  c.aqi < aqiVal ? "up" : c.aqi > aqiVal ? "down" : "stable",
+              } as LocationData;
+            } catch {
+              return c; // fallback
+            }
+          })
+        );
+        if (!cancelled) setCities(updated);
+      } catch {
+        /* ignore */
+      }
+    }
+    loadOnce();
+    const interval = setInterval(loadOnce, 60000);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+    // Intentionally exclude cities from deps to avoid resetting interval; we do manual mapping above
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

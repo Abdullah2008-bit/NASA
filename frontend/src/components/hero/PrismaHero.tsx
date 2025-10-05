@@ -208,7 +208,7 @@ export function PrismaHero({ onEnter }: PrismaHeroProps) {
             <motion.div
               initial={{ opacity: 0, y: 25, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ delay: 1, duration: 0.6, ease: 'easeOut' }}
+              transition={{ delay: 1, duration: 0.6, ease: "easeOut" }}
               className="mb-20 flex justify-center"
             >
               <motion.button

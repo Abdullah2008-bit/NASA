@@ -27,6 +27,7 @@ import {
 } from "@/hooks/use-air-quality-data";
 import { DataProvenanceModal } from "@/components/data/DataProvenanceModal";
 import { FusionStats } from "@/components/data/FusionStats";
+import { CountryStats } from "@/components/data/CountryStats";
 // Alert types removed after deterministic alert refactor
 
 // Lazy load 3D Globe for better performance
@@ -117,22 +118,31 @@ export default function Home() {
   useEffect(() => {
     if (aggregated) {
       const p = aggregated.pollutants;
+      const sub = aggregated.aqi?.subindices || {};
       const aqiValue =
         aggregated.aqi?.value ??
         computeAQI({
-          pm25: p.pm25,
-          o3: p.o3,
-          no2: p.no2,
+          pm25: p.pm25 ?? (sub.pm25 as number | undefined),
+          o3: p.o3 ?? (sub.o3 as number | undefined),
+          no2: p.no2 ?? (sub.no2 as number | undefined),
         });
       setCurrentPollutants({
         aqi: aqiValue,
-        no2: p.no2 ?? 0,
-        o3: p.o3 ?? 0,
-        pm25: p.pm25 ?? (p.aerosolIndex ? (p.aerosolIndex as number) * 10 : 0),
+        no2: p.no2 ?? (sub.no2 as number) ?? 0,
+        o3: p.o3 ?? (sub.o3 as number) ?? 0,
+        pm25:
+          p.pm25 ??
+          (sub.pm25 as number) ??
+          (p.aerosolIndex ? (p.aerosolIndex as number) * 10 : 0),
         hcho: p.hcho ?? 0,
       });
     }
   }, [aggregated]);
+
+  // Extract country (after comma) from selectedLocation.name if present
+  const selectedCountry = selectedLocation.name.includes(",")
+    ? selectedLocation.name.split(",").slice(-1)[0].trim()
+    : undefined;
 
   // Deterministic alert generation: category changes & jumps
   const previousAQIRef = useRef<number | null>(null);
@@ -339,6 +349,10 @@ export default function Home() {
                       className="bg-gray-900/50 backdrop-blur-xl"
                     />
                     <FusionStats data={aggregated} />
+                    <CountryStats
+                      country={selectedCountry}
+                      aggregated={aggregated}
+                    />
                   </div>
                   {/* Alerts: deterministic toasts now handled via AQI change logic */}
 
