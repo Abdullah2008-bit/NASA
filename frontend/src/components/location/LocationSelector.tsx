@@ -39,9 +39,10 @@ export function LocationSelector({
     }
     // Static fallback
     const base = country ? CITIES.filter((c) => c.country === country) : CITIES;
-    return (query
-      ? base.filter((c) => c.name.toLowerCase().includes(query.toLowerCase()))
-      : base
+    return (
+      query
+        ? base.filter((c) => c.name.toLowerCase().includes(query.toLowerCase()))
+        : base
     ).sort((a, b) => a.name.localeCompare(b.name));
   }, [apiCities, country, query]);
 
@@ -77,10 +78,10 @@ export function LocationSelector({
       <div className="flex gap-2">
         <select
           value={country}
-            onChange={(e) => {
-              setCountry(e.target.value);
-              setQuery("");
-            }}
+          onChange={(e) => {
+            setCountry(e.target.value);
+            setQuery("");
+          }}
           className="bg-white/5 border border-white/10 rounded-md px-2 py-1 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 flex-1"
         >
           <option value="">All Countries</option>
@@ -93,9 +94,7 @@ export function LocationSelector({
         <select
           value={value.name.split(",")[0]}
           onChange={(e) => {
-            const city = filteredCities.find(
-              (c) => c.name === e.target.value
-            );
+            const city = filteredCities.find((c) => c.name === e.target.value);
             if (city) {
               onChange({
                 lat: city.lat,
@@ -106,9 +105,7 @@ export function LocationSelector({
           }}
           className="bg-white/5 border border-white/10 rounded-md px-2 py-1 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 flex-1"
         >
-          {!filteredCities.length && (
-            <option value="">No cities found</option>
-          )}
+          {!filteredCities.length && <option value="">No cities found</option>}
           {filteredCities.length > 0 && (
             <>
               {filteredCities.map((c) => (

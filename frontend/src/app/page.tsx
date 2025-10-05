@@ -260,7 +260,9 @@ export default function Home() {
           >
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-md bg-blue-600/20 border border-blue-500/40 flex items-center justify-center">
-                <span className="text-white font-semibold text-sm tracking-wide">AQI</span>
+                <span className="text-white font-semibold text-sm tracking-wide">
+                  AQI
+                </span>
               </div>
               <div>
                 <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-300 via-cyan-400 to-blue-600">

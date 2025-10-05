@@ -27,7 +27,9 @@ export default function AQICard({
       whileHover={{ scale: 1.02, boxShadow: "0 20px 40px rgba(0,0,0,0.3)" }}
       className={`relative overflow-hidden rounded-2xl p-6 ${className}`}
     >
-      <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-15`} />
+      <div
+        className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-15`}
+      />
 
       <div className="relative z-10">
         {/* Location */}

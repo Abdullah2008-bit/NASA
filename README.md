@@ -66,23 +66,29 @@ The goal: leverage Earth observation + ground networks to deliver actionable, gl
 ## Quick Launch
 
 ### Requirements
+
 - Node.js 20+
 - Python 3.11+
 - (Optional) Docker & Docker Compose
 - (Planned) NASA Earthdata Account for real TEMPO ingestion
 
 ### 1. Clone & Install
+
 ```
 git clone https://github.com/Abdullah2008-bit/NASA.git
 cd NASA/skycast
 ```
+
 Frontend:
+
 ```
 cd frontend
 pnpm install # or npm install / yarn
 pnpm dev
 ```
+
 Backend:
+
 ```
 cd ../backend
 python -m venv .venv
@@ -90,21 +96,27 @@ source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
+
 Visit: http://localhost:3000 (frontend) and http://localhost:8000/docs (API docs if enabled).
 
 ### 2. Environment Variables
+
 Copy `.env.example` to `.env.local` (frontend) / `.env` (backend) and set at minimum:
+
 ```
 NEXT_PUBLIC_MAPBOX_TOKEN=your_mapbox_token
 BACKEND_API_BASE=http://localhost:8000
 ```
+
 Optional future ingestion (not yet required):
+
 ```
 EARTHDATA_USERNAME=...
 EARTHDATA_PASSWORD=...
 ```
 
 ### 3. Run Tests (Backend AQI)
+
 ```
 cd backend
 pytest -q
@@ -140,12 +152,14 @@ See in‑app “Data Provenance” modal for user‑friendly summary. Technical 
 - Validation roadmap: cross-source consistency scoring + anomaly detection.
 
 Limitations (current build):
+
 - No real TEMPO retrieval yet (mock values).
 - O₃ 8‑hour average uses instantaneous proxy.
 - Single-station dominance (multi-station weighting forthcoming).
 - Forecast not model-backed yet.
 
 Ethical / Fair Use:
+
 - No regional prioritization or hard-coded bias.
 - Explicit attribution for each upstream network.
 - Open design encourages environmental transparency.

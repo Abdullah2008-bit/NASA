@@ -68,7 +68,9 @@ export default function RootLayout({
       <head>
         <meta name="theme-color" content="#050814" />
       </head>
-      <body className={`${inter.variable} font-sans antialiased bg-black text-white`}>        
+      <body
+        className={`${inter.variable} font-sans antialiased bg-black text-white`}
+      >
         {children}
       </body>
     </html>
