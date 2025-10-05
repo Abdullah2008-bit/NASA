@@ -204,32 +204,38 @@ export function PrismaHero({ onEnter }: PrismaHeroProps) {
               observation data and pragmatic machine learning.
             </motion.p>
 
-            {/* CTA Buttons - GitHub style */}
+            {/* Single Prominent Launch App CTA (replaces Start Forecasting + GitHub) */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+              initial={{ opacity: 0, y: 25, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: 1, duration: 0.6, ease: 'easeOut' }}
+              className="mb-20 flex justify-center"
             >
               <motion.button
                 onClick={onEnter}
-                className="px-6 py-3 rounded-md bg-white text-slate-900 text-sm font-medium hover:bg-slate-100 transition-colors"
-                whileHover={{ scale: 1.03, y: -1 }}
+                aria-label="Launch SkyCast Application"
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.97 }}
+                className="group relative inline-flex items-center justify-center
+                           rounded-2xl px-14 py-6 text-2xl font-semibold tracking-wide
+                           bg-gradient-to-r from-cyan-400 via-sky-500 to-emerald-500
+                           text-white shadow-[0_8px_34px_-4px_rgba(0,200,255,0.55)]
+                           hover:shadow-[0_10px_40px_-4px_rgba(0,255,200,0.55)]
+                           transition-all duration-300 focus:outline-none
+                           focus-visible:ring-4 focus-visible:ring-cyan-300/60
+                           border border-white/10 backdrop-blur-xl"
               >
-                Start Forecasting
+                <span className="mr-4 text-[15px] font-medium uppercase tracking-widest text-white/80">
+                  SkyCast
+                </span>
+                Launch App
+                <span className="ml-5 text-3xl leading-none transition-transform group-hover:translate-x-1">
+                  →
+                </span>
+                {/* Subtle overlay / glow */}
+                <span className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-white/20" />
+                <span className="absolute -inset-px rounded-2xl bg-gradient-to-r from-cyan-400/0 via-white/10 to-emerald-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </motion.button>
-
-              <motion.a
-                href="https://github.com/Abdullah2008-bit/NASA"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-6 py-3 rounded-md bg-white/5 border border-white/10 text-white text-sm font-medium hover:bg-white/10 transition-colors"
-                whileHover={{ scale: 1.03, y: -1 }}
-                whileTap={{ scale: 0.97 }}
-              >
-                GitHub
-              </motion.a>
             </motion.div>
 
             {/* Live Data Streams - Zory.ai style */}
