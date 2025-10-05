@@ -453,8 +453,8 @@ export default function Earth3DGlobe(props: Earth3DGlobeProps) {
 
   return (
     <div className="relative w-full h-full bg-gradient-to-b from-slate-950 to-black">
-      {/* Compact Legend & Layer Control (Top Right) */}
-      <div className="absolute top-3 right-3 z-20">
+      {/* Compact Legend & Layer Control (Bottom Right repositioned) */}
+      <div className="absolute bottom-3 right-3 z-20">
         <details className="group open:backdrop-blur-xl">
           <summary className="list-none cursor-pointer select-none flex items-center gap-2 bg-black/60 hover:bg-black/70 border border-white/10 rounded-lg px-3 py-2 text-[11px] text-white/70 font-medium">
             <span className="flex items-center gap-1">
@@ -465,12 +465,12 @@ export default function Earth3DGlobe(props: Earth3DGlobeProps) {
               ▾
             </span>
           </summary>
-          <div className="mt-2 w-64 bg-black/70 backdrop-blur-xl border border-white/10 rounded-xl p-3 space-y-4 shadow-xl">
+          <div className="mt-2 w-56 bg-black/65 backdrop-blur-xl border border-white/10 rounded-xl p-3 space-y-3 shadow-xl">
             <div>
-              <div className="text-[10px] text-white/50 font-semibold uppercase tracking-wide mb-2">
-                TEMPO Layers
+              <div className="text-[9px] text-white/50 font-semibold uppercase tracking-wide mb-1">
+                Layers
               </div>
-              <div className="space-y-1 max-h-44 overflow-auto pr-1">
+              <div className="space-y-1 max-h-40 overflow-auto pr-1">
                 {[
                   { id: "all", name: "All Pollutants", color: "#8b5cf6" },
                   { id: "no2", name: "NO₂", color: "#f59e0b" },
@@ -483,7 +483,7 @@ export default function Earth3DGlobe(props: Earth3DGlobeProps) {
                     onClick={() =>
                       setSelectedPollutant(layer.id as typeof selectedPollutant)
                     }
-                    className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-[11px] transition-colors border ${
+                    className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-[10px] transition-colors border ${
                       selectedPollutant === layer.id
                         ? "bg-white/15 text-white border-white/30"
                         : "bg-white/5 text-white/60 hover:bg-white/10 border-transparent"
@@ -499,10 +499,10 @@ export default function Earth3DGlobe(props: Earth3DGlobeProps) {
               </div>
             </div>
             <div>
-              <div className="text-[10px] text-white/50 font-semibold uppercase tracking-wide mb-1">
+              <div className="text-[9px] text-white/50 font-semibold uppercase tracking-wide mb-1">
                 AQI
               </div>
-              <div className="space-y-1 text-[10px]">
+              <div className="space-y-1 text-[9px]">
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-green-500" /> Good
                   0–50

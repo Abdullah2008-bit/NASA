@@ -108,9 +108,23 @@ function computeAdvisory(profile: HealthProfile, aqi: number): AdvisoryResult {
 
 interface HealthAdvisorProps {
   currentAQI: number;
+  pollutants?: {
+    pm25?: number;
+    o3?: number;
+    no2?: number;
+    hcho?: number;
+    aerosolIndex?: number;
+  };
+  dominant?: string | null;
+  subindices?: Record<string, number>;
 }
 
-export function HealthAdvisor({ currentAQI }: HealthAdvisorProps) {
+export function HealthAdvisor({
+  currentAQI,
+  pollutants,
+  dominant,
+  subindices,
+}: HealthAdvisorProps) {
   const [profile, setProfile] = useState<HealthProfile>({
     age: null,
     conditions: [],
@@ -119,10 +133,25 @@ export function HealthAdvisor({ currentAQI }: HealthAdvisorProps) {
     activityLevel: "moderate",
   });
 
-  const result = useMemo(
-    () => computeAdvisory(profile, currentAQI),
-    [profile, currentAQI]
-  );
+  const result = useMemo(() => {
+    const base = computeAdvisory(profile, currentAQI);
+    let pollutantAdd = 0;
+    const extraTriggers: string[] = [];
+    if (subindices) {
+      Object.entries(subindices).forEach(([k, v]) => {
+        if (v != null) {
+          const add = Math.min(12, v * 0.12); // cap contribution
+          pollutantAdd += add;
+          extraTriggers.push(`${k.toUpperCase()} SI ${Math.round(v)}`);
+        }
+      });
+    }
+    return {
+      ...base,
+      riskScore: Math.min(100, Math.round(base.riskScore + pollutantAdd)),
+      triggers: [...base.triggers, ...extraTriggers],
+    };
+  }, [profile, currentAQI, subindices]);
 
   const toggleCondition = (id: string) => {
     setProfile((p) => ({
@@ -261,6 +290,21 @@ export function HealthAdvisor({ currentAQI }: HealthAdvisorProps) {
                     {result.riskScore}
                   </div>
                 </div>
+                {dominant && (
+                  <div className="text-center">
+                    <div className="text-[10px] text-white/50 tracking-wide">
+                      DOMINANT
+                    </div>
+                    <div className="text-xs font-semibold text-white uppercase">
+                      {dominant}
+                    </div>
+                    {subindices?.[dominant] != null && (
+                      <div className="text-[10px] text-white/40">
+                        SI {Math.round(subindices[dominant])}
+                      </div>
+                    )}
+                  </div>
+                )}
                 <div className="text-center">
                   <div className="text-[10px] text-white/50 tracking-wide">
                     CATEGORY
@@ -289,8 +333,8 @@ export function HealthAdvisor({ currentAQI }: HealthAdvisorProps) {
               />
             </div>
             <div className="mt-2 text-[10px] text-white/40">
-              Heuristic scoring (0–100). Future: ML / AI model integrating
-              multi-pollutant dose and meteorology.
+              Heuristic scoring (0–100) with pollutant subindices. Future: ML
+              exposure & dose forecasting.
             </div>
           </div>
 
@@ -327,7 +371,7 @@ export function HealthAdvisor({ currentAQI }: HealthAdvisorProps) {
             </div>
           </div>
 
-          <div className="bg-gradient-to-r from-pink-600/10 via-fuchsia-600/10 to-indigo-600/10 border border-pink-400/20 rounded-2xl p-5">
+          <div className="bg-gradient-to-r from-pink-600/10 via-fuchsia-600/10 to-indigo-600/10 border border-pink-400/20 rounded-2xl p-5 space-y-4">
             <p className="text-[11px] text-white/50 leading-relaxed">
               Disclaimer: This feature provides generalized wellness guidance,
               not medical advice. Consult a healthcare professional for clinical
@@ -335,6 +379,28 @@ export function HealthAdvisor({ currentAQI }: HealthAdvisorProps) {
               personalized exposure forecasting using longitudinal symptom +
               pollutant histories.
             </p>
+            {pollutants && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 text-[10px]">
+                {Object.entries(pollutants).map(([k, v]) => (
+                  <div
+                    key={k}
+                    className="bg-white/5 border border-white/10 rounded-md px-2 py-1 flex flex-col gap-0.5"
+                  >
+                    <span className="uppercase text-white/50 font-medium">
+                      {k}
+                    </span>
+                    <span className="text-white font-semibold text-xs">
+                      {v != null ? v : "—"}
+                    </span>
+                    {subindices?.[k] != null && (
+                      <span className="text-[9px] text-white/40">
+                        SI {Math.round(subindices[k])}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

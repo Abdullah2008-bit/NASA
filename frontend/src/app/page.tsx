@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import AQICard from "@/components/ui/AQICard";
@@ -21,11 +21,12 @@ import FloatingSatellite from "@/components/scroll/FloatingSatellite";
 import InteractiveWorldMap from "@/components/scroll/InteractiveWorldMap";
 import ScrollSection from "@/components/scroll/ScrollSection";
 import {
-  useTEMPOData,
   useGroundStationData,
   useForecast,
+  useAggregatedAirQuality,
 } from "@/hooks/use-air-quality-data";
-import { AlertData } from "@/types/air-quality"; // retained for mock alert typing
+import { DataProvenanceModal } from "@/components/data/DataProvenanceModal";
+// Alert types removed after deterministic alert refactor
 
 // Lazy load 3D Globe for better performance
 const FunctionalEarth3D = dynamic(
@@ -53,8 +54,6 @@ export default function Home() {
     lon: -74.006,
     name: "New York City",
   });
-  // Track only recent mock alerts internally (used for toast logic) – not rendered directly
-  const [recentAlerts, setRecentAlerts] = useState<AlertData[]>([]);
   const [currentTab, setCurrentTab] = useState<
     | "dashboard"
     | "forecast"
@@ -73,6 +72,7 @@ export default function Home() {
     hcho: 0,
   });
   const [showSatelliteLayer, setShowSatelliteLayer] = useState(true);
+  const [showProvenance, setShowProvenance] = useState(false);
 
   // Lightweight mock pollutant data for 3D layer toggle (replace with real TEMPO fusion soon)
   const pollutantData = showSatelliteLayer
@@ -106,61 +106,64 @@ export default function Home() {
   const toast = useToast();
 
   // Fetch data with SWR (automatic caching & revalidation) - ALWAYS call hooks unconditionally
-  const { data: tempoData, isLoading: tempoLoading } = useTEMPOData(
-    selectedLocation.lat,
-    selectedLocation.lon
-  );
+  const { data: aggregated, isLoading: aggregatedLoading } =
+    useAggregatedAirQuality(selectedLocation.lat, selectedLocation.lon);
   // Future: integrate real ground & forecast usage
   useGroundStationData(selectedLocation.lat, selectedLocation.lon);
   useForecast(selectedLocation.lat, selectedLocation.lon);
 
   // Derive pollutant snapshot from latest TEMPO sample (placeholder until fused dataset)
   useEffect(() => {
-    if (tempoData && tempoData.length) {
-      // Choose the most recent reading (assumed last or sort by timestamp)
-      const latest = [...tempoData].sort(
-        (a, b) =>
-          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-      )[0];
-      const pm25 = latest.pm ?? latest.aerosolIndex * 10; // heuristic fallback
-      const next = {
-        no2: latest.no2,
-        o3: latest.o3,
-        pm25,
-        hcho: latest.hcho,
-      };
-      const aqi = computeAQI({ pm25: next.pm25, o3: next.o3, no2: next.no2 });
-      setCurrentPollutants({ aqi, ...next });
+    if (aggregated) {
+      const p = aggregated.pollutants;
+      const aqiValue =
+        aggregated.aqi?.value ??
+        computeAQI({
+          pm25: p.pm25,
+          o3: p.o3,
+          no2: p.no2,
+        });
+      setCurrentPollutants({
+        aqi: aqiValue,
+        no2: p.no2 ?? 0,
+        o3: p.o3 ?? 0,
+        pm25: p.pm25 ?? (p.aerosolIndex ? (p.aerosolIndex as number) * 10 : 0),
+        hcho: p.hcho ?? 0,
+      });
     }
-  }, [tempoData]);
+  }, [aggregated]);
 
-  // Simulate real-time alerts - useEffect MUST be called unconditionally
+  // Deterministic alert generation: category changes & jumps
+  const previousAQIRef = useRef<number | null>(null);
+  const previousCategoryRef = useRef<string | null>(null);
   useEffect(() => {
-    if (!showDashboard) return; // Early return inside effect is OK
+    if (!aggregated) return;
+    const aqiVal = aggregated.aqi?.value ?? currentPollutants.aqi;
+    const category = aggregated.aqi?.category;
+    const prevVal = previousAQIRef.current;
+    const prevCat = previousCategoryRef.current;
 
-    const interval = setInterval(() => {
-      const mockAlert: AlertData = {
-        id: Date.now().toString(),
-        level: Math.random() > 0.5 ? "warning" : "info",
-        aqi: Math.floor(Math.random() * 100) + 50,
-        location: selectedLocation.name,
-        message: "Air quality has changed. Check the latest forecast.",
-        timestamp: new Date(),
-        expiresAt: new Date(Date.now() + 10000),
-      };
-      setRecentAlerts((prev) => [mockAlert, ...prev.slice(0, 2)]);
-
-      // Show toast notification for high AQI alerts
-      if (mockAlert.aqi > 100) {
-        toast.warning(
-          "High AQI Alert",
-          `Air quality in ${mockAlert.location} has deteriorated (AQI: ${mockAlert.aqi})`
+    if (prevVal != null) {
+      const delta = aqiVal - prevVal;
+      if (Math.abs(delta) >= 35) {
+        toast.info(
+          "AQI Rapid Change",
+          `AQI changed by ${delta > 0 ? "+" : ""}${delta} in ${
+            selectedLocation.name
+          }`
         );
       }
-    }, 15000);
-
-    return () => clearInterval(interval);
-  }, [selectedLocation, showDashboard, toast]);
+    }
+    if (prevCat && category && prevCat !== category) {
+      toast.warning(
+        "Category Shift",
+        `${selectedLocation.name} moved from ${prevCat} to ${category}`
+      );
+    }
+    previousAQIRef.current = aqiVal;
+    previousCategoryRef.current = category || null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [aggregated]);
 
   // Keyboard shortcuts for navigation
   useEffect(() => {
@@ -218,14 +221,11 @@ export default function Home() {
 
   // Show success toast when data is loaded (only once on mount)
   useEffect(() => {
-    if (tempoData && !tempoLoading) {
-      toast.success(
-        "Data Updated",
-        "Latest NASA TEMPO data loaded successfully"
-      );
+    if (aggregated && !aggregatedLoading) {
+      toast.success("Data Updated", "Latest fused air quality data loaded");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tempoData, tempoLoading]);
+  }, [aggregated, aggregatedLoading]);
 
   // Show hero section first, then dashboard
   if (!showDashboard) {
@@ -302,6 +302,14 @@ export default function Home() {
                 </motion.button>
               ))}
             </nav>
+            <div className="hidden md:flex items-center gap-3 ml-4 pl-4 border-l border-white/10">
+              <button
+                onClick={() => setShowProvenance(true)}
+                className="text-xs font-medium px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white transition-colors"
+              >
+                Data Provenance
+              </button>
+            </div>
           </motion.div>
         </div>
       </header>
@@ -327,12 +335,7 @@ export default function Home() {
                     timestamp={new Date()}
                     className="bg-gray-900/50 backdrop-blur-xl"
                   />
-                  {/* Hidden meta hook usage to acknowledge alert stream */}
-                  {recentAlerts.length > 0 && (
-                    <span className="sr-only" aria-live="polite">
-                      {recentAlerts.length} active alerts processed
-                    </span>
-                  )}
+                  {/* Alerts: deterministic toasts now handled via AQI change logic */}
 
                   {/* Pollutant Breakdown */}
                   <motion.div
@@ -565,7 +568,16 @@ export default function Home() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <HealthAdvisor currentAQI={currentPollutants.aqi} />
+              <HealthAdvisor
+                currentAQI={currentPollutants.aqi}
+                pollutants={{
+                  pm25: currentPollutants.pm25,
+                  o3: currentPollutants.o3,
+                  no2: currentPollutants.no2,
+                }}
+                dominant={aggregated?.aqi?.dominant}
+                subindices={aggregated?.aqi?.subindices}
+              />
             </motion.div>
           )}
           {/* Pakistan tab removed; cities integrated into globe markers */}
@@ -723,6 +735,14 @@ export default function Home() {
                   </a>
                 </li>
                 <li>
+                  <button
+                    onClick={() => setShowProvenance(true)}
+                    className="hover:text-white transition-colors"
+                  >
+                    → Data Provenance & Attribution
+                  </button>
+                </li>
+                <li>
                   <a
                     href="https://github.com/Abdullah2008-bit/NASA"
                     target="_blank"
@@ -746,6 +766,10 @@ export default function Home() {
           </div>
         </div>
       </footer>
+      <DataProvenanceModal
+        open={showProvenance}
+        onClose={() => setShowProvenance(false)}
+      />
     </div>
   );
 }

@@ -46,3 +46,23 @@ async def search_cities(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/countries")
+async def list_countries():
+    """List available countries with OpenAQ coverage (cached)."""
+    try:
+        countries = await openaq_service.list_countries()
+        return {"success": True, "results": countries}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/nearest")
+async def nearest_station(
+    lat: float = Query(..., ge=-90, le=90),
+    lon: float = Query(..., ge=-180, le=180),
+):
+    try:
+        station = await openaq_service.get_nearest_station(lat, lon)
+        return {"success": True, "station": station}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+

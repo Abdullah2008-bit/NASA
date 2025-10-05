@@ -30,6 +30,29 @@ export interface TEMPOData {
   pm: number; // Particulate Matter
 }
 
+// Aggregated Air Quality (satellite + ground fusion)
+export interface AggregatedAirQuality {
+  location: { lat: number; lon: number; name?: string };
+  timestamp: Date;
+  pollutants: {
+    pm25?: number;
+    o3?: number;
+    no2?: number;
+    hcho?: number;
+    aerosolIndex?: number;
+  };
+  aqi: {
+    value: number;
+    dominant: string | null;
+    category: string;
+    subindices: Record<string, number>;
+  };
+  sources: {
+    tempo: unknown;
+    openaq: unknown;
+  };
+}
+
 // Ground Station Data
 export interface GroundStationData {
   stationId: string;

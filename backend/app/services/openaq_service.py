@@ -23,6 +23,9 @@ class OpenAQService:
     def __init__(self):
         self.base_url = os.getenv("OPENAQ_BASE_URL", "https://api.openaq.org/v2")
         self._client: Optional[httpx.AsyncClient] = None
+        self._countries_cache: Optional[Dict[str, Any]] = None
+        self._countries_cache_ts: Optional[float] = None
+        self._cache_ttl = 3600  # seconds
 
     @property
     def client(self) -> httpx.AsyncClient:
@@ -176,6 +179,30 @@ class OpenAQService:
                 seen.add(key)
                 unique.append(item)
         return unique
+
+    async def list_countries(self) -> List[Dict[str, str]]:
+        import time
+        now = time.time()
+        if self._countries_cache and self._countries_cache_ts and now - self._countries_cache_ts < self._cache_ttl:
+            return self._countries_cache  # type: ignore
+        try:
+            resp = await self.client.get("/countries", params={"limit": 300, "order_by": "name", "sort": "asc"})
+            resp.raise_for_status()
+            data = resp.json().get("results", [])
+            simplified = [
+                {"code": c.get("code"), "name": c.get("name")}
+                for c in data if c.get("code") and c.get("name")
+            ]
+            self._countries_cache = simplified  # type: ignore
+            self._countries_cache_ts = now
+            return simplified
+        except httpx.HTTPError:
+            return self._countries_cache or []  # fallback to stale if present
+
+    async def get_nearest_station(self, lat: float, lon: float) -> Optional[Dict[str, Any]]:
+        data = await self.get_nearby_stations(lat, lon, 25, None, 1)
+        stations = data.get("stations") if isinstance(data, dict) else []
+        return stations[0] if stations else None
 
     def _haversine(self, lat1, lon1, lat2, lon2) -> float:
         if None in (lat1, lon1, lat2, lon2):

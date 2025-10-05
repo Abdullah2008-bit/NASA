@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Import routes
-from app.routes import tempo, openaq, weather, forecast
+from app.routes import tempo, openaq, weather, forecast, airquality
 
 app = FastAPI(
     title="SkyCast API",
@@ -37,6 +37,7 @@ app.include_router(tempo.router, prefix="/api/tempo", tags=["TEMPO"])
 app.include_router(openaq.router, prefix="/api/openaq", tags=["OpenAQ"])
 app.include_router(weather.router, prefix="/api/weather", tags=["Weather"])
 app.include_router(forecast.router, prefix="/api/forecast", tags=["Forecast"])
+app.include_router(airquality.router, prefix="/api/airquality", tags=["Aggregated"])
 
 @app.get("/")
 async def root():
