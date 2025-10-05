@@ -1,0 +1,47 @@
+# Render Infrastructure as Code for SkyCast
+# Reference: https://render.com/docs/infrastructure-as-code
+
+services:
+  - type: web
+    name: skycast-backend
+    env: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.5
+      - key: API_PORT
+        value: 10000 # Not always used; Render provides $PORT.
+      - key: CORS_ORIGINS
+        value: https://your-frontend-domain.com,https://www.your-frontend-domain.com,http://localhost:3000
+      - key: LOG_LEVEL
+        value: info
+      # Add any secrets below (do NOT commit real secret values)
+      # - key: OPENAQ_API_KEY
+      #   sync: false # set in dashboard
+
+  - type: web
+    name: skycast-frontend
+    env: node
+    rootDir: frontend
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    autoDeploy: true
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        # Replace BACKEND_RENDER_URL after first backend deploy (e.g. https://skycast-backend.onrender.com)
+        value: https://skycast-backend.onrender.com
+      - key: NODE_VERSION
+        value: 18.20.3
+# Optional: background worker example (disabled by default)
+#  - type: worker
+#    name: skycast-jobs
+#    env: python
+#    rootDir: backend
+#    buildCommand: pip install -r requirements.txt
+#    startCommand: python -m app.jobs.scheduler
+#    autoDeploy: true
