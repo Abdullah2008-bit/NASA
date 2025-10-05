@@ -1,0 +1,32 @@
+# Railway service configuration for SkyCast backend (monorepo)
+# Docs: https://docs.railway.app/reference/config-file
+
+[build]
+# Use Nixpacks (automatic Python detection via requirements.txt)
+builder = "NIXPACKS"
+
+[deploy]
+# Scale: 1 instance; restart only on failure
+numReplicas = 1
+startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+restartPolicyType = "ON_FAILURE"
+
+[service]
+# IMPORTANT: Path to the backend relative to the repo root. The remote repo
+# structure (Railpack output) shows `backend/` at the top level, not `skycast/backend`,
+# so we correct this to just "backend".
+rootDirectory = "backend"
+# Simple health check so deployments show healthy status
+healthcheckPath = "/health"
+healthcheckTimeout = 100
+
+# After committing this file:
+# 1. git add railway.toml
+# 2. git commit -m "chore: add railway config"
+# 3. git push
+# 4. In Railway: Settings -> Redeploy (or trigger new build) and it will now cd into backend
+
+# Environment variables are still managed in the Railway UI (Variables tab):
+#   CORS_ORIGINS=https://your-frontend-domain.com,http://localhost:3000
+#   ENV=production
+#   (optional) LOG_LEVEL=info
