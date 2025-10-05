@@ -116,19 +116,13 @@ export function PrismaHero({ onEnter }: PrismaHeroProps) {
                 animate={{ opacity: 1, x: 0 }}
                 className="flex items-center gap-3"
               >
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-slate-700 flex items-center justify-center shadow-lg shadow-blue-600/40 ring-1 ring-blue-300/20">
-                  <span className="text-white font-bold text-xl">S</span>
-                </div>
-                <div>
-                  <div className="text-white font-bold text-xl tracking-tight">
-                    Sky
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-cyan-400 to-blue-500">
-                      Cast
-                    </span>
-                  </div>
-                  <div className="text-xs text-blue-200/60">
+                <div className="flex flex-col">
+                  <span className="text-white font-semibold text-lg tracking-tight">
+                    SkyCast
+                  </span>
+                  <span className="text-[10px] uppercase text-white/40 tracking-wider">
                     NASA Space Apps 2025
-                  </div>
+                  </span>
                 </div>
               </motion.div>
 
@@ -137,36 +131,34 @@ export function PrismaHero({ onEnter }: PrismaHeroProps) {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="hidden md:flex items-center gap-8"
+                className="hidden md:flex items-center gap-6"
               >
-                {["Features", "Data Sources", "Documentation", "GitHub"].map(
-                  (item, i) => (
-                    <motion.a
-                      key={item}
-                      href="#"
-                      className="text-sm text-white/80 hover:text-white transition-colors font-medium"
-                      whileHover={{ y: -2 }}
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 + i * 0.1 }}
-                    >
-                      {item}
-                    </motion.a>
-                  )
-                )}
+                {["Features", "Sources", "Docs", "GitHub"].map((item, i) => (
+                  <motion.a
+                    key={item}
+                    href="#"
+                    className="text-xs font-medium tracking-wide text-white/70 hover:text-white transition-colors"
+                    whileHover={{ y: -2 }}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 + i * 0.1 }}
+                  >
+                    {item}
+                  </motion.a>
+                ))}
               </motion.div>
 
               {/* CTA Button */}
               <motion.button
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5 }}
+                transition={{ delay: 0.4 }}
                 onClick={onEnter}
-                className="px-6 py-2.5 rounded-lg bg-white text-slate-900 font-semibold text-sm hover:bg-blue-50 transition-all shadow-lg shadow-white/20"
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
+                className="px-5 py-2 rounded-md bg-white/10 border border-white/15 text-white text-xs font-medium tracking-wide hover:bg-white/15 transition-colors"
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
               >
-                Launch App →
+                Launch App
               </motion.button>
             </div>
           </div>
@@ -193,30 +185,23 @@ export function PrismaHero({ onEnter }: PrismaHeroProps) {
 
             {/* Main Heading - Prisma gradient style */}
             <motion.h1
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.8 }}
-              className="text-6xl md:text-8xl font-bold mb-6 leading-none"
+              transition={{ delay: 0.6, duration: 0.6 }}
+              className="text-5xl md:text-6xl font-semibold mb-6 tracking-tight text-white"
             >
-              <span className="text-white">Predicting</span>
-              <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-700 animate-gradient">
-                Cleaner, Safer Skies
-              </span>
+              Cleaner, Safer Skies
             </motion.h1>
 
             {/* Subtitle */}
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9 }}
-              className="text-xl md:text-2xl text-white/70 mb-12 max-w-3xl mx-auto leading-relaxed"
+              transition={{ delay: 0.7 }}
+              className="text-base md:text-lg text-white/60 mb-10 max-w-xl mx-auto leading-relaxed font-normal"
             >
-              Professional air quality forecasting powered by{" "}
-              <span className="text-white font-semibold">
-                NASA&apos;s Earth observation satellites
-              </span>
-              , advanced machine learning, and cloud computing
+              Professional air quality intelligence powered by NASA Earth
+              observation data and pragmatic machine learning.
             </motion.p>
 
             {/* CTA Buttons - GitHub style */}
@@ -228,46 +213,22 @@ export function PrismaHero({ onEnter }: PrismaHeroProps) {
             >
               <motion.button
                 onClick={onEnter}
-                className="group px-8 py-4 rounded-xl bg-white text-slate-900 font-bold text-lg shadow-2xl shadow-white/20 hover:shadow-white/40 transition-all"
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
+                className="px-6 py-3 rounded-md bg-white text-slate-900 text-sm font-medium hover:bg-slate-100 transition-colors"
+                whileHover={{ scale: 1.03, y: -1 }}
+                whileTap={{ scale: 0.97 }}
               >
-                <span className="flex items-center gap-2">
-                  Start Forecasting
-                  <svg
-                    className="w-5 h-5 group-hover:translate-x-1 transition-transform"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 7l5 5m0 0l-5 5m5-5H6"
-                    />
-                  </svg>
-                </span>
+                Start Forecasting
               </motion.button>
 
               <motion.a
                 href="https://github.com/Abdullah2008-bit/NASA"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-8 py-4 rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-white font-semibold text-lg hover:bg-white/20 transition-all"
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
+                className="px-6 py-3 rounded-md bg-white/5 border border-white/10 text-white text-sm font-medium hover:bg-white/10 transition-colors"
+                whileHover={{ scale: 1.03, y: -1 }}
+                whileTap={{ scale: 0.97 }}
               >
-                <span className="flex items-center gap-2">
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
-                  </svg>
-                  View on GitHub
-                </span>
+                GitHub
               </motion.a>
             </motion.div>
 
@@ -380,19 +341,9 @@ export function PrismaHero({ onEnter }: PrismaHeroProps) {
           className="flex flex-col items-center gap-2"
         >
           <span className="text-white/40 text-xs">Scroll to explore</span>
-          <svg
-            className="w-6 h-6 text-white/40"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 14l-7 7m0 0l-7-7m7 7V3"
-            />
-          </svg>
+          <div className="w-5 h-5 border border-white/30 rounded-full flex items-center justify-center text-white/40 text-[10px] tracking-wider">
+            ↓
+          </div>
         </motion.div>
       </motion.div>
     </div>

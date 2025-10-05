@@ -260,16 +260,16 @@ export default function Home() {
             className="flex items-center justify-between"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-md bg-blue-600/20 border border-blue-500/40 flex items-center justify-center">
-                <span className="text-white font-semibold text-sm tracking-wide">
+              <div className="w-9 h-9 rounded-md bg-white/5 border border-white/10 flex items-center justify-center">
+                <span className="text-white font-medium text-[11px] tracking-wide">
                   AQI
                 </span>
               </div>
-              <div>
-                <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-300 via-cyan-400 to-blue-600">
+              <div className="leading-tight">
+                <h1 className="text-xl font-semibold text-white tracking-tight">
                   SkyCast
                 </h1>
-                <p className="text-xs text-gray-400 tracking-wide">
+                <p className="text-[10px] uppercase text-white/40 tracking-wider">
                   NASA Space Apps 2025
                 </p>
               </div>
@@ -284,17 +284,17 @@ export default function Home() {
               </div>
             </div>
 
-            <nav className="flex gap-5">
+            <nav className="flex gap-4">
               {tabs.map((tab, i) => (
                 <motion.button
                   key={tab.id}
                   onClick={() => setCurrentTab(tab.id)}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`font-medium transition-all ${
+                  className={`text-xs font-medium tracking-wide transition-colors ${
                     currentTab === tab.id
                       ? "text-white"
-                      : "text-gray-400 hover:text-white"
+                      : "text-white/50 hover:text-white"
                   }`}
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -307,7 +307,7 @@ export default function Home() {
             <div className="hidden md:flex items-center gap-3 ml-4 pl-4 border-l border-white/10">
               <button
                 onClick={() => setShowProvenance(true)}
-                className="text-xs font-medium px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white transition-colors"
+                className="text-[11px] font-medium px-3 py-1.5 rounded-md bg-white/5 border border-white/10 hover:bg-white/10 text-white/70 hover:text-white transition-colors tracking-wide"
               >
                 Data Provenance
               </button>
@@ -607,13 +607,13 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="max-w-6xl mx-auto"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white text-center mb-6">
+            <h2 className="text-3xl md:text-4xl font-semibold text-white text-center mb-4 tracking-tight">
               Real-Time Global Air Quality Insights
             </h2>
-            <p className="text-xl text-blue-300 text-center mb-16 max-w-3xl mx-auto">
-              Monitor air quality across the world in real-time. Search any city
-              or country to see live AQI data, pollutant levels, and health
-              recommendations.
+            <p className="text-base md:text-lg text-white/60 text-center mb-12 max-w-2xl mx-auto leading-relaxed">
+              Monitor global air quality in real time. Search any city or
+              country to view current AQI, pollutant composition and
+              evidence-based health guidance.
             </p>
 
             <div className="grid md:grid-cols-3 gap-8">
@@ -674,10 +674,12 @@ export default function Home() {
                   key={index}
                   className="text-center bg-gradient-to-br from-blue-600/20 to-purple-600/20 backdrop-blur-sm border border-blue-500/20 rounded-xl p-6"
                 >
-                  <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-2">
+                  <div className="text-2xl font-semibold text-white mb-1 tracking-tight">
                     {stat.value}
                   </div>
-                  <div className="text-sm text-gray-400">{stat.label}</div>
+                  <div className="text-[11px] uppercase tracking-wider text-white/50">
+                    {stat.label}
+                  </div>
                 </div>
               ))}
             </motion.div>
@@ -690,16 +692,20 @@ export default function Home() {
         <div className="container mx-auto px-4 py-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
             <div>
-              <h4 className="font-bold text-white mb-3">About SkyCast</h4>
-              <p className="text-gray-400 leading-relaxed">
+              <h4 className="font-semibold text-white mb-2 tracking-tight">
+                About SkyCast
+              </h4>
+              <p className="text-white/60 leading-relaxed text-sm">
                 Professional air quality forecasting platform powered by NASA
                 Earth observation data and advanced machine learning models for
                 the NASA Space Apps Challenge 2025.
               </p>
             </div>
             <div>
-              <h4 className="font-bold text-white mb-3">Data Sources</h4>
-              <ul className="space-y-2 text-gray-400">
+              <h4 className="font-semibold text-white mb-2 tracking-tight">
+                Data Sources
+              </h4>
+              <ul className="space-y-1 text-white/60 text-sm">
                 <li>→ NASA TEMPO Satellite</li>
                 <li>→ MERRA-2 Reanalysis</li>
                 <li>→ GOES-R Geostationary</li>
@@ -707,8 +713,10 @@ export default function Home() {
               </ul>
             </div>
             <div>
-              <h4 className="font-bold text-white mb-3">Resources</h4>
-              <ul className="space-y-2 text-gray-400">
+              <h4 className="font-semibold text-white mb-2 tracking-tight">
+                Resources
+              </h4>
+              <ul className="space-y-1 text-white/60 text-sm">
                 <li>
                   <a
                     href="https://tempo.si.edu/"
@@ -760,14 +768,11 @@ export default function Home() {
               </ul>
             </div>
           </div>
-          <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-500 text-sm">
+          <div className="mt-8 pt-8 border-t border-gray-800 text-center text-white/40 text-[11px] tracking-wide">
             <p>
-              Built with ❤️ for NASA Space Apps Challenge 2025 | Predicting
-              Cleaner, Safer Skies
+              Built for NASA Space Apps 2025 · Predicting Cleaner, Safer Skies
             </p>
-            <p className="mt-2">
-              Data provided by NASA Earth Science Division • All rights reserved
-            </p>
+            <p className="mt-2">Data © NASA Earth Science Division</p>
           </div>
         </div>
       </footer>

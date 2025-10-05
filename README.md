@@ -13,7 +13,7 @@
 
 ---
 
-## 🎯 Challenge Context & Scope
+## Challenge Context & Scope
 
 The goal: leverage Earth observation + ground networks to deliver actionable, globally-fair air quality intelligence. Many demos hard‑code regional bias, rely on static CSVs, or simulate AQI—SkyCast instead:
 
@@ -29,7 +29,7 @@ The goal: leverage Earth observation + ground networks to deliver actionable, gl
 
 ---
 
-## ✨ Implemented Highlights (Hackathon Build)
+## Implemented Highlights (Hackathon Build)
 
 | Area                 | Delivered                                                  | Notes                                                        |
 | -------------------- | ---------------------------------------------------------- | ------------------------------------------------------------ |
@@ -126,7 +126,7 @@ Docker (optional one-command orchestration): See `DEPLOYMENT.md`.
 
 ---
 
-## 🧭 Roadmap (Post-Submission)
+## Roadmap (Post-Submission)
 
 | Phase | Focus              | Key Deliverables                                      |
 | ----- | ------------------ | ----------------------------------------------------- |
@@ -164,7 +164,7 @@ Ethical / Fair Use:
 - Explicit attribution for each upstream network.
 - Open design encourages environmental transparency.
 
-## 📊 Data Sources
+## Data Sources
 
 | Source           | Mode              | Current Use                              | Planned Enhancement                             |
 | ---------------- | ----------------- | ---------------------------------------- | ----------------------------------------------- |
@@ -177,7 +177,7 @@ Ethical / Fair Use:
 
 ---
 
-## 🎯 Use Cases
+## Use Cases
 
 - 🏃 **Athletes & Outdoor Enthusiasts** - Plan activities based on air quality
 - 🏫 **Schools & Universities** - Protect student health during poor AQI
@@ -189,19 +189,19 @@ Ethical / Fair Use:
 
 ---
 
-## ⌨️ Keyboard Shortcuts
+## Keyboard Shortcuts
 
 Navigate like a pro with keyboard shortcuts:
 
-| Shortcut | Action                            |
-| -------- | --------------------------------- |
-| `Ctrl+1` | 🌍 Dashboard (3D Globe)           |
-| `Ctrl+2` | 📈 Forecast (6h-72h predictions)  |
-| `Ctrl+3` | 🚨 Alerts (Health warnings)       |
-| `Ctrl+4` | 📊 History (Time series)          |
-| `Ctrl+5` | ✅ Validation (Data quality)      |
-| `Ctrl+6` | 🔍 Analytics ⭐ NEW (AI insights) |
-| `Ctrl+7` | 🔄 Compare ⭐ NEW (Multi-city)    |
+| Shortcut | Action                        |
+| -------- | ----------------------------- |
+| `Ctrl+1` | Dashboard (3D Globe)          |
+| `Ctrl+2` | Forecast (6h-72h predictions) |
+| `Ctrl+3` | Alerts (Health warnings)      |
+| `Ctrl+4` | History (Time series)         |
+| `Ctrl+5` | Validation (Data quality)     |
+| `Ctrl+6` | Analytics (AI insights)       |
+| `Ctrl+7` | Compare (Multi-city)          |
 
 > **Tip:** On Mac, use `⌘` instead of `Ctrl`. All shortcuts show instant toast feedback!
 
@@ -209,7 +209,7 @@ See [KEYBOARD_SHORTCUTS.md](./KEYBOARD_SHORTCUTS.md) for full details.
 
 ---
 
-## 🖼️ Screenshots
+## Screenshots
 
 ### Dashboard
 
@@ -229,7 +229,7 @@ See [KEYBOARD_SHORTCUTS.md](./KEYBOARD_SHORTCUTS.md) for full details.
 
 ---
 
-## 🧪 Core API (Implemented)
+## Core API (Implemented)
 
 Base: `http://localhost:8000`
 
@@ -250,7 +250,7 @@ curl "http://localhost:8000/api/airquality?lat=40.7128&lon=-74.0060"
 
 ---
 
-## 🧠 Forecasting Status
+## Forecasting Status
 
 The UI + API contract are in place; current responses are deterministic scaffolds. Upcoming steps:
 
@@ -261,7 +261,7 @@ The UI + API contract are in place; current responses are deterministic scaffold
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Please follow these steps:
 
@@ -273,13 +273,13 @@ We welcome contributions! Please follow these steps:
 
 ---
 
-## 📜 License
+## License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 👥 Team Credits
+## Team Credits
 
 **Team SkyCast** - NASA Space Apps Challenge 2025
 
