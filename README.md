@@ -1,187 +1,116 @@
-<!-- # 🌍 SkyCast - Professional Air Quality Forecasting Platform
+# 🌍 SkyCast – Fused Satellite + Ground Air Quality Intelligence (NASA Space Apps 2025)
 
 <div align="center">
 
 [![NASA Space Apps 2025](https://img.shields.io/badge/NASA-Space%20Apps%202025-0B3D91?style=for-the-badge&logo=nasa)](https://www.spaceappschallenge.org/2025/challenges/)
-[![TEMPO Satellite](https://img.shields.io/badge/TEMPO-Satellite_Data-E03C31?style=for-the-badge)](https://tempo.si.edu/)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/Abdullah2008-bit/NASA/ci-cd.yml?style=for-the-badge)](https://github.com/Abdullah2008-bit/NASA/actions)
+[![TEMPO (Mock Integration)](https://img.shields.io/badge/TEMPO-Integration_Ready-E03C31?style=for-the-badge)](https://tempo.si.edu/)
+[![OpenAQ](https://img.shields.io/badge/OpenAQ-Live_Data-00A8E0?style=for-the-badge)](https://openaq.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge)](LICENSE)
 
-### **From EarthData to Action: Cloud Computing with Earth Observation Data for Predicting Cleaner, Safer Skies**
+**From Raw Observations to Actionable AQI: A unified, globally-neutral air quality intelligence layer.**
 
-**Enterprise-grade air quality forecasting powered by NASA's Earth observation satellites, advanced ML models, and cloud-native architecture.**
+`SkyCast` fuses (currently) live ground station data with a satellite placeholder to deliver dynamic AQI, pollutant breakdowns, health guidance, provenance, and alerting—built for the NASA Space Apps 2025 challenge.
 
-[🚀 Live Demo](https://skycast-nasa.vercel.app) · [📖 Documentation](./docs/DEVELOPMENT.md) · [🎬 Video Demo](https://youtube.com) · [🏆 Challenge Page](https://www.spaceappschallenge.org/2025/challenges/)
-
-![SkyCast Preview](https://via.placeholder.com/1200x600/0B3D91/FFFFFF?text=SkyCast+Professional+Dashboard)
+[🚀 Live Demo](https://skycast-nasa.vercel.app) · [🧪 Data Provenance (in‑app modal)](#data-provenance--methodology) · [📄 Implementation Status](./IMPLEMENTATION_STATUS.md) · [🏆 Challenge Page](https://www.spaceappschallenge.org/2025/challenges/)
 
 </div>
 
 ---
 
-## 🎯 NASA Space Apps 2025 Challenge
+## 🎯 Challenge Context & Scope
 
-**Challenge:** Build a cloud-based platform that processes NASA Earth observation data to predict air quality and provide actionable insights for cleaner, safer skies.
+The goal: leverage Earth observation + ground networks to deliver actionable, globally-fair air quality intelligence. Many demos hard‑code regional bias, rely on static CSVs, or simulate AQI—SkyCast instead:
 
-**Our Solution:** SkyCast is a production-ready web application that delivers world-class air quality forecasting through:
+1. Provides a neutral global experience (dynamic country + city selection from live APIs)
+2. Computes AQI deterministically using EPA breakpoints (not random noise)
+3. Fuses heterogeneous sources (satellite placeholder + ground) with explicit precedence
+4. Surfaces provenance & limitations transparently (modal + README section)
+5. Exposes typed, extensible service layer for rapid addition of real NASA ingestion
 
-- 🛰️ **Real NASA TEMPO Satellite Data** - Hourly tropospheric pollutant measurements (NO₂, O₃, HCHO, SO₂)
-- 🌤️ **MERRA-2 Meteorological Data** - High-resolution weather patterns and atmospheric conditions
-- 🌐 **GOES-R Geostationary Observations** - Aerosol optical depth and cloud dynamics
-- 🤖 **Advanced ML Forecasting** - Ensemble models (LSTM + XGBoost) with 96% R² accuracy
-- ☁️ **Cloud-Native Architecture** - AWS serverless infrastructure with global CDN
-- 📊 **Scientific-Grade Visualization** - Professional charts, 3D globe, and interactive maps
+> Current state (Hackathon submission): Ground data (OpenAQ) is live. Satellite (TEMPO) portion is a placeholder awaiting authenticated earthaccess ingestion (see Roadmap). Forecasting & advanced ML are scaffolded but not yet training real models in‑repo (fast simulation for UI continuity).
 
 ![SkyCast Banner](docs/screenshots/banner.png)
 
 ---
 
-## ✨ Features
+## ✨ Implemented Highlights (Hackathon Build)
 
-### 🎯 Core Features
-- 🌐 **Real-Time 3D Globe** - Interactive Earth visualization with live pollutant overlays (NO₂, O₃, PM2.5, HCHO, Aerosols)
-- 🤖 **AI-Powered Forecasts** - LSTM/XGBoost models predict AQI for 6h/12h/24h/48h/72h ahead
-- 🚨 **Smart Alerts** - Real-time push notifications for poor air quality with health recommendations
-- 📊 **Multi-Source Data Integration** - NASA TEMPO + OpenAQ + Pandora + TOLNet + NOAA weather
-- 📈 **Historical Trends** - Visualize air quality patterns over 7/30/90/365 days
-- 🔬 **Satellite vs Ground Validation** - Compare TEMPO satellite data with ground station accuracy
+| Area                 | Delivered                                                  | Notes                                                        |
+| -------------------- | ---------------------------------------------------------- | ------------------------------------------------------------ |
+| AQI Computation      | ✅ EPA breakpoint interpolation (PM2.5, O₃(8h proxy), NO₂) | In `backend/app/utils/aqi.py`; returns dominant + subindices |
+| Data Fusion Endpoint | ✅ `/api/airquality`                                       | Merges ground (priority) + satellite placeholder             |
+| Ground Integration   | ✅ OpenAQ nearest stations, countries, cities              | Caching & radius filtering implemented                       |
+| Satellite Layer      | 🟡 Placeholder (mocked measurements)                       | Real TEMPO ingestion staged (earthaccess already added)      |
+| Health Advisor       | ✅ Uses dominant pollutant + weighted risk                 | Adaptive guidance via subindices                             |
+| Deterministic Alerts | ✅ Category transition + rapid delta detection             | Toast surfaced (no randomization)                            |
+| Provenance Modal     | ✅ In‑app modal with transparency                          | Triggered via header/footer buttons                          |
+| Legend UI            | ✅ Compact, bottom‑right overlay                           | Improves 3D globe clarity                                    |
+| Location Selector    | ✅ Dynamic country + city search (OpenAQ)                  | Fallback resilience                                          |
+| Forecast Scaffold    | 🟡 UI + API route simulating model                         | Real model training deferred                                 |
+| Tests                | ✅ AQI unit tests                                          | Boundary coverage in `backend/tests/test_aqi.py`             |
+| Types                | ✅ Strong TS typing (removed loose `any`)                  | Except legacy forecast stub                                  |
 
-### ⭐ NEW: Ultimate Enhancements (Latest)
-- 🔍 **Advanced Analytics Dashboard** - AI-powered anomaly detection, correlation matrix (21 pollutant pairs), AQI breakdown by contribution
-- 🔄 **Multi-City Comparison** - Side-by-side comparison of up to 4 cities with best/worst indicators
-- 🔔 **Toast Notification System** - Real-time feedback with 4 types (success, error, warning, info) and auto-dismiss
-- ⏳ **Professional Loading States** - 5 skeleton variants, spinners, page loader with NASA branding, error fallback UI
-- ⌨️ **Keyboard Shortcuts** - Power user navigation (Ctrl+1-7 for tabs) with toast feedback
-- ♿ **Accessibility Features** - Screen reader support, ARIA live regions, keyboard-first design
+### UX & Interface Features
 
-### 🎨 Design Excellence
-- 🎨 **Futuristic UI** - Prisma.io/GitHub/Zory.ai inspired glassmorphic design
-- ✨ **Smooth Animations** - Framer Motion, gradient flows, pulse effects
-- ⚡ **Zero-Lag Performance** - Code-split, lazy-loaded, cached, optimized for speed
-- 📱 **Mobile-First PWA** - Works offline, installable on any device, responsive layouts
+- 3D globe (pollutant points + location focus)
+- Keyboard navigation (Ctrl/Cmd+1‑8) for major views
+- Animated pollutant metric cards & transitions
+- Responsive layout + accessible semantic regions
+- Modular SWR hooks with typed envelopes
 
----
+### Engineering Principles
 
-## 🛠️ Tech Stack
-
-### Frontend
-
-![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-06B6D4?logo=tailwindcss)
-![Three.js](https://img.shields.io/badge/Three.js-r170-black?logo=three.js)
-![Framer Motion](https://img.shields.io/badge/Framer%20Motion-11-FF0055?logo=framer)
-
-- **Next.js 15** (App Router, RSC, Streaming SSR)
-- **React Three Fiber** (3D globe with pollutant layers)
-- **CesiumJS** (Geospatial visualization)
-- **Framer Motion** (Smooth animations)
-- **Tailwind CSS** (Utility-first styling)
-- **SWR** (Data fetching & caching)
-- **PWA** (Service worker, offline support)
-
-### Backend
-
-![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi)
-![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)
-![Redis](https://img.shields.io/badge/Redis-7-DC382D?logo=redis)
-
-- **FastAPI** (Async REST API)
-- **Uvicorn** (ASGI server)
-- **Redis** (Caching layer)
-- **Httpx** (Async HTTP client)
-- **Pydantic** (Data validation)
-
-### ML Pipeline
-
-![PyTorch](https://img.shields.io/badge/PyTorch-2.2-EE4C2C?logo=pytorch)
-![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.4-F7931E?logo=scikit-learn)
-
-- **PyTorch** (LSTM models)
-- **XGBoost** (Gradient boosting)
-- **Xarray** (Multi-dimensional arrays)
-- **Pandas/NumPy** (Data processing)
-- **Scikit-learn** (ML utilities)
-- **Earthaccess** (NASA data access)
-
-### Cloud & DevOps
-
-![Docker](https://img.shields.io/badge/Docker-24-2496ED?logo=docker)
-![Vercel](https://img.shields.io/badge/Vercel-black?logo=vercel)
-![AWS](https://img.shields.io/badge/AWS-Lambda%2FECS-FF9900?logo=amazon-aws)
-
-- **Docker** (Containerization)
-- **Docker Compose** (Multi-service orchestration)
-- **GitHub Actions** (CI/CD)
-- **Vercel** (Frontend deployment)
-- **AWS Lambda/ECS** (Backend deployment)
+- Separation: `routes/` vs `services/` vs `utils/`
+- Graceful fallback (missing satellite → still returns AQI from ground)
+- Extensibility: Add new pollutant by extending breakpoints + fusion mapping
+- Transparency: Provenance modal + roadmap
 
 ---
 
-## 📁 Project Structure
+## 🛠️ Tech Stack (Focused Subset Used Now)
 
-```
-skycast/
-├── .github/
-│   └── workflows/          # CI/CD pipelines
-│       ├── frontend-ci.yml
-│       ├── backend-ci.yml
-│       └── deploy.yml
-├── frontend/               # Next.js web app
-│   ├── src/
-│   │   ├── app/           # Pages & routes
-│   │   ├── components/    # React components
-│   │   │   ├── ui/        # UI primitives
-│   │   │   ├── globe/     # 3D Earth components
-│   │   │   └── alerts/    # Alert system
-│   │   ├── lib/           # Utilities
-│   │   ├── hooks/         # Custom hooks
-│   │   └── styles/        # Global styles
-│   ├── public/            # Static assets
-│   └── package.json
-├── backend/                # FastAPI server
-│   ├── app/
-│   │   ├── main.py        # Entry point
-│   │   ├── routes/        # API endpoints
-│   │   │   ├── tempo.py
-│   │   │   ├── openaq.py
-│   │   │   ├── weather.py
-│   │   │   └── forecast.py
-│   │   ├── services/      # Business logic
-│   │   ├── models/        # Pydantic models
-│   │   └── utils/         # Helper functions
-│   ├── requirements.txt
-│   └── Dockerfile
-├── ml/                     # Machine learning
-│   ├── notebooks/         # Jupyter notebooks
-│   │   ├── 01_data_exploration.ipynb
-│   │   ├── 02_feature_engineering.ipynb
-│   │   └── 03_model_training.ipynb
-│   ├── scripts/           # Training scripts
-│   │   ├── train_lstm.py
-│   │   ├── train_xgboost.py
-│   │   └── validate.py
-│   ├── models/            # Saved models (.pkl)
-│   └── requirements.txt
-├── cloud/                  # Infrastructure
-│   ├── docker-compose.yml
-│   ├── Dockerfile.frontend
-│   ├── Dockerfile.backend
-│   └── terraform/         # IaC (optional)
-├── docs/                   # Documentation
-│   ├── api/               # API documentation
-│   ├── screenshots/       # App screenshots
-│   └── hackathon/         # Deliverables
+## 👥 Team Credits
+
+**Team SkyCast** - NASA Space Apps Challenge 2025
+
+- **Muhammad Abdullah Atif** - Full-Stack Developer & ML Engineer
+- (Add collaborators if applicable)
+
+---
+
+## � Data Provenance and Methodology
+
+│ │ │ ├── tempo.py
+│ │ │ ├── openaq.py
+│ │ │ └── forecast.py
+│ │ ├── services/ # Business logic
+│ │ ├── models/ # Pydantic models
+│ │ └── utils/ # Helper functions
+│ ├── requirements.txt
+│ ├── notebooks/ # Jupyter notebooks
+│ │ ├── 02_feature_engineering.ipynb
+│ │ └── 03_model_training.ipynb
+│ ├── scripts/ # Training scripts
+│ │ ├── train_lstm.py
+│ │ ├── train_xgboost.py
+│ ├── models/ # Saved models (.pkl)
+│ └── requirements.txt
+├── cloud/ # Infrastructure
+│ ├── docker-compose.yml
+│ ├── Dockerfile.frontend
+│ ├── Dockerfile.backend
+│ └── terraform/ # IaC (optional)
+├── docs/ # Documentation
+│ ├── api/ # API documentation
+│ ├── screenshots/ # App screenshots
+│ └── hackathon/ # Deliverables
 ├── .gitignore
 ├── LICENSE
 └── README.md
+
 ```
 
----
 
-## 🚀 Quick Start
-
-### Prerequisites
 
 - **Node.js** 20+
 - **Python** 3.11+
@@ -190,52 +119,43 @@ skycast/
 
 ### 1. Clone the Repository
 
-```bash
-git clone https://github.com/Abdullah2008-bit/NASA.git
-cd NASA/skycast
-```
-
 ### 2. Set Up Environment Variables
 
-**Frontend** (`frontend/.env.local`):
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:8000
 NEXT_PUBLIC_MAPBOX_TOKEN=your_mapbox_token
 ```
 
-**Backend** (`backend/.env`):
+---
 
-```env
-NASA_EARTHDATA_USERNAME=your_username
-NASA_EARTHDATA_PASSWORD=your_password
-REDIS_URL=redis://localhost:6379
-OPENAQ_API_KEY=your_openaq_key
-```
+## 🧭 Roadmap (Post-Submission)
 
-### 3. Run with Docker (Recommended)
+| Phase | Focus              | Key Deliverables                                      |
+| ----- | ------------------ | ----------------------------------------------------- |
+| 1     | Real Satellite     | Earthaccess auth, granule search, spatial aggregation |
+| 2     | Historical Store   | Persist fused hourly frames (TSDB or parquet)         |
+| 3     | Forecast Models    | Train + version XGBoost/LSTM ensemble                 |
+| 4     | Validation Layer   | Multi-station weighting + uncertainty bands           |
+| 5     | Advanced Analytics | Source contribution decomposition, drift detection    |
+| 6     | Public API Tier    | Rate limiting, API keys, usage metrics                |
 
-```bash
-docker-compose up --build
-```
+Stretch: wildfire smoke plume integration (VIIRS), health burden estimation, personal exposure mode.
 
-Access the app:
+---
 
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:8000
-- **API Docs**: http://localhost:8000/docs
+## 📜 License
 
-### 4. Run Locally (Development)
+MIT License – see [LICENSE](LICENSE).
 
-**Frontend**:
+---
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
+## 📞 Contact
 
-**Backend**:
+- **GitHub**: [@Abdullah2008-bit](https://github.com/Abdullah2008-bit)
+- **Project Repository**: [NASA SkyCast](https://github.com/Abdullah2008-bit/NASA)
+- **Email**: (add contact)
+
+---
+
+_Built with ❤️ for NASA Space Apps Challenge 2025 – Transparent, extensible, globally fair air quality intelligence._
 
 ```bash
 cd backend
@@ -259,15 +179,14 @@ python scripts/train_lstm.py
 
 ## 📊 Data Sources
 
-| Source         | Type                | Variables                        | Update Frequency |
-| -------------- | ------------------- | -------------------------------- | ---------------- |
-| **NASA TEMPO** | Satellite           | NO₂, O₃, HCHO, PM, Aerosol Index | Near Real-Time   |
-| **OpenAQ**     | Ground Sensors      | PM2.5, PM10, O₃, NO₂, SO₂, CO    | Real-Time        |
-| **Pandora**    | Ground Spectroscopy | NO₂, O₃ columns                  | Hourly           |
-| **TOLNet**     | Ground Lidar        | O₃ profiles                      | Hourly           |
-| **NOAA**       | Weather             | Temperature, Wind, Humidity      | Hourly           |
-| **IMERG**      | Precipitation       | Rainfall                         | 30 minutes       |
-| **MERRA-2**    | Reanalysis          | Multi-variable                   | 1-hour           |
+| Source           | Mode              | Current Use                              | Planned Enhancement                             |
+| ---------------- | ----------------- | ---------------------------------------- | ----------------------------------------------- |
+| OpenAQ           | Live              | Nearest station pollutant baselines      | Expand to multiple station weighting            |
+| TEMPO            | Placeholder       | Mock values for o₃/no₂/hcho/aerosolIndex | Real product ingestion + spatial binning        |
+| NOAA / Weather   | Placeholder label | UI reference only                        | Integrate meteorology for forecast + dispersion |
+| MERRA‑2          | Not yet           | —                                        | Backfill historical series consistency          |
+| IMERG            | Not yet           | —                                        | Rain scavenging impact modeling                 |
+| Pandora / TOLNet | Not yet           | —                                        | Column/profile validation layer                 |
 
 ---
 
@@ -287,15 +206,15 @@ python scripts/train_lstm.py
 
 Navigate like a pro with keyboard shortcuts:
 
-| Shortcut    | Action                              |
-| ----------- | ----------------------------------- |
-| `Ctrl+1`    | 🌍 Dashboard (3D Globe)             |
-| `Ctrl+2`    | 📈 Forecast (6h-72h predictions)    |
-| `Ctrl+3`    | 🚨 Alerts (Health warnings)         |
-| `Ctrl+4`    | 📊 History (Time series)            |
-| `Ctrl+5`    | ✅ Validation (Data quality)        |
-| `Ctrl+6`    | 🔍 Analytics ⭐ NEW (AI insights)   |
-| `Ctrl+7`    | 🔄 Compare ⭐ NEW (Multi-city)      |
+| Shortcut | Action                            |
+| -------- | --------------------------------- |
+| `Ctrl+1` | 🌍 Dashboard (3D Globe)           |
+| `Ctrl+2` | 📈 Forecast (6h-72h predictions)  |
+| `Ctrl+3` | 🚨 Alerts (Health warnings)       |
+| `Ctrl+4` | 📊 History (Time series)          |
+| `Ctrl+5` | ✅ Validation (Data quality)      |
+| `Ctrl+6` | 🔍 Analytics ⭐ NEW (AI insights) |
+| `Ctrl+7` | 🔄 Compare ⭐ NEW (Multi-city)    |
 
 > **Tip:** On Mac, use `⌘` instead of `Ctrl`. All shortcuts show instant toast feedback!
 
@@ -323,34 +242,35 @@ See [KEYBOARD_SHORTCUTS.md](./KEYBOARD_SHORTCUTS.md) for full details.
 
 ---
 
-## 🧪 API Endpoints
+## 🧪 Core API (Implemented)
 
-### Base URL: `http://localhost:8000`
+Base: `http://localhost:8000`
 
-| Endpoint        | Method | Description                               |
-| --------------- | ------ | ----------------------------------------- |
-| `/api/tempo`    | GET    | Fetch NASA TEMPO data (NO₂, O₃, HCHO, PM) |
-| `/api/openaq`   | GET    | Get ground sensor data from OpenAQ        |
-| `/api/weather`  | GET    | Retrieve weather data (NOAA, MERRA-2)     |
-| `/api/forecast` | POST   | Get AI-predicted AQI (6h/12h/24h)         |
-| `/api/alerts`   | GET    | Fetch active air quality alerts           |
-| `/api/history`  | GET    | Get historical AQI trends                 |
+| Endpoint                | Method | Purpose                      | Notes                                   |
+| ----------------------- | ------ | ---------------------------- | --------------------------------------- |
+| `/api/airquality`       | GET    | Fused AQI + pollutant set    | Returns subindices + provenance sources |
+| `/api/openaq/countries` | GET    | Country list (cached)        | Drives selector                         |
+| `/api/openaq/cities`    | GET    | Cities for country           | Pagination-ready                        |
+| `/api/openaq/nearest`   | GET    | Nearby stations              | Radius + limit params                   |
+| `/api/tempo`            | GET    | Satellite placeholder sample | Will become real ingestion              |
+| `/api/forecast`         | GET    | Simulated forecast envelope  | Shape stable for later model swap       |
 
-**Example**:
+Example:
 
 ```bash
-curl http://localhost:8000/api/tempo?lat=40.7128&lon=-74.0060&date=2025-10-04
+curl "http://localhost:8000/api/airquality?lat=40.7128&lon=-74.0060"
 ```
 
 ---
 
-## 🧠 ML Model Performance
+## 🧠 Forecasting Status
 
-| Model        | MAE     | RMSE     | R² Score | Inference Time |
-| ------------ | ------- | -------- | -------- | -------------- |
-| LSTM         | 8.2     | 12.4     | 0.91     | 45ms           |
-| XGBoost      | 7.8     | 11.9     | 0.93     | 12ms           |
-| **Ensemble** | **7.1** | **10.8** | **0.94** | 57ms           |
+The UI + API contract are in place; current responses are deterministic scaffolds. Upcoming steps:
+
+1. Ingest historical fused dataset (persist to time-series store)
+2. Train baseline regression (XGBoost) → residual LSTM refinement
+3. Add rolling ozone compliance metrics
+4. Store model metadata + version in response envelope
 
 ---
 
@@ -381,15 +301,43 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ---
 
-## 🙏 Acknowledgments
+## � Data Provenance & Methodology
 
-- **NASA** - TEMPO satellite data & Earthdata resources
-- **OpenAQ** - Ground sensor network data
-- **NOAA** - Weather data & forecasting
-- **ESA** - Additional satellite resources
-- **Space Apps Challenge** - Organizing this amazing hackathon
+See in‑app “Data Provenance” modal for user‑friendly summary. Technical points:
+
+- Subindex formula: linear interpolation within EPA breakpoint interval: `I = (I_hi - I_lo)/(C_hi - C_lo) * (C - C_lo) + I_lo`.
+- Dominant pollutant = max subindex (rounded to nearest integer for AQI value).
+- Fusion precedence: ground > satellite per pollutant; missing values fallback gracefully.
+- Satellite placeholder intentionally architected to be swappable with real ingestion service (already imported as `tempo_service`).
+- Validation roadmap includes cross-source consistency scoring + anomaly trend flagging.
+
+Limitations (current build):
+
+- No real TEMPO retrieval yet (mock values).
+- O₃ 8‑hour average uses instantaneous proxy.
+- Single-station dominance (multi-station weighting forthcoming).
+- Forecast not model-backed yet.
+
+Ethical / Fair Use:
+
+- No regional prioritization or hard-coded city bias.
+- Attribution provided for each upstream network.
+- Encourages open environmental transparency.
 
 ---
+
+## 🧭 Roadmap (Post-Submission)
+
+| Phase | Focus              | Key Deliverables                                      |
+| ----- | ------------------ | ----------------------------------------------------- |
+| 1     | Real Satellite     | Earthaccess auth, granule search, spatial aggregation |
+| 2     | Historical Store   | Persist fused hourly frames (TSDB or parquet)         |
+| 3     | Forecast Models    | Train + version XGBoost/LSTM ensemble                 |
+| 4     | Validation Layer   | Multi-station weighting + uncertainty bands           |
+| 5     | Advanced Analytics | Source contribution decomposition, drift detection    |
+| 6     | Public API Tier    | Rate limiting, API keys, usage metrics                |
+
+Stretch: wildfire smoke plume integration (VIIRS), health burden estimation, personal exposure mode.
 
 ## 📞 Contact
 
@@ -401,6 +349,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 <div align="center">
   <strong>Built with ❤️ for NASA Space Apps Challenge 2025</strong>
-  <br>
-  <sub>Helping communities breathe cleaner air through data-driven insights</sub>
-</div> --> -->
+  <br />
+  <sub>Transparent, extensible, and globally fair air quality intelligence</sub>
+</div>
