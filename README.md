@@ -284,7 +284,8 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 **Team SkyCast** - NASA Space Apps Challenge 2025
 
 - **Muhammad Abdullah Atif** - Full-Stack Developer & ML Engineer
-- [Add your team members here]
+- **Mohid Khan**
+  **Shehroze Bilal**
 
 ---
 
