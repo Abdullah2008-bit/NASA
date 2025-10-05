@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { CITIES, COUNTRIES, CityMeta } from "@/data/cities";
 import { useOpenAQCountries, useOpenAQCities } from "@/hooks/use-openaq";
 
@@ -25,58 +25,99 @@ export function LocationSelector({
   // Fallback to static cities if API provides none
   const filteredCities = useMemo<CityMeta[]>(() => {
     if (apiCities.length) {
-      return apiCities.map((c) => ({
+      const mapped = apiCities.map((c) => ({
         name: c.name,
         country: c.country,
         lat: c.lat,
         lon: c.lon,
       }));
+      return query
+        ? mapped.filter((c) =>
+            c.name.toLowerCase().includes(query.toLowerCase())
+          )
+        : mapped.sort((a, b) => a.name.localeCompare(b.name));
     }
     // Static fallback
     const base = country ? CITIES.filter((c) => c.country === country) : CITIES;
-    return query
+    return (query
       ? base.filter((c) => c.name.toLowerCase().includes(query.toLowerCase()))
-      : base;
+      : base
+    ).sort((a, b) => a.name.localeCompare(b.name));
   }, [apiCities, country, query]);
 
   const countryOptions = useMemo(() => {
-    if (apiCountries.length) return apiCountries.map((c) => c.name).sort();
-    return COUNTRIES;
+    if (apiCountries.length) {
+      return apiCountries
+        .map((c) => ({ label: c.name, value: c.name }))
+        .sort((a, b) => a.label.localeCompare(b.label));
+    }
+    return COUNTRIES.map((c) => ({ label: c, value: c })).sort((a, b) =>
+      a.label.localeCompare(b.label)
+    );
   }, [apiCountries]);
+
+  // Auto-select a sensible default city if current selection not in filtered list
+  useEffect(() => {
+    if (filteredCities.length) {
+      const currentCityName = value.name.split(",")[0];
+      const exists = filteredCities.some((c) => c.name === currentCityName);
+      if (!exists) {
+        const first = filteredCities[0];
+        onChange({
+          lat: first.lat,
+          lon: first.lon,
+          name: `${first.name}, ${first.country}`,
+        });
+      }
+    }
+  }, [filteredCities, onChange, value.name]);
 
   return (
     <div className={`flex flex-col gap-2 ${compact ? "text-xs" : "text-sm"}`}>
       <div className="flex gap-2">
         <select
           value={country}
-          onChange={(e) => setCountry(e.target.value)}
+            onChange={(e) => {
+              setCountry(e.target.value);
+              setQuery("");
+            }}
           className="bg-white/5 border border-white/10 rounded-md px-2 py-1 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 flex-1"
         >
           <option value="">All Countries</option>
           {countryOptions.map((c) => (
-            <option key={c} value={c}>
-              {c}
+            <option key={c.value} value={c.value}>
+              {c.label}
             </option>
           ))}
         </select>
         <select
-          value={value.name}
+          value={value.name.split(",")[0]}
           onChange={(e) => {
-            const city = CITIES.find((c) => c.name === e.target.value);
-            if (city)
+            const city = filteredCities.find(
+              (c) => c.name === e.target.value
+            );
+            if (city) {
               onChange({
                 lat: city.lat,
                 lon: city.lon,
                 name: `${city.name}, ${city.country}`,
               });
+            }
           }}
           className="bg-white/5 border border-white/10 rounded-md px-2 py-1 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 flex-1"
         >
-          {filteredCities.map((c) => (
-            <option key={c.name} value={c.name}>
-              {c.name}
-            </option>
-          ))}
+          {!filteredCities.length && (
+            <option value="">No cities found</option>
+          )}
+          {filteredCities.length > 0 && (
+            <>
+              {filteredCities.map((c) => (
+                <option key={c.name} value={c.name}>
+                  {c.name}
+                </option>
+              ))}
+            </>
+          )}
         </select>
       </div>
       <input

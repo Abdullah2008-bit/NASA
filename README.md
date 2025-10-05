@@ -1,6 +1,4 @@
-# 🌍 SkyCast – Fused Satellite + Ground Air Quality Intelligence (NASA Space Apps 2025)
-
-<div align="center">
+# SkyCast – Fused Satellite + Ground Air Quality Intelligence (NASA Space Apps 2025)
 
 [![NASA Space Apps 2025](https://img.shields.io/badge/NASA-Space%20Apps%202025-0B3D91?style=for-the-badge&logo=nasa)](https://www.spaceappschallenge.org/2025/challenges/)
 [![TEMPO (Mock Integration)](https://img.shields.io/badge/TEMPO-Integration_Ready-E03C31?style=for-the-badge)](https://tempo.si.edu/)
@@ -11,9 +9,7 @@
 
 `SkyCast` fuses (currently) live ground station data with a satellite placeholder to deliver dynamic AQI, pollutant breakdowns, health guidance, provenance, and alerting—built for the NASA Space Apps 2025 challenge.
 
-[🚀 Live Demo](https://skycast-nasa.vercel.app) · [🧪 Data Provenance (in‑app modal)](#data-provenance--methodology) · [📄 Implementation Status](./IMPLEMENTATION_STATUS.md) · [🏆 Challenge Page](https://www.spaceappschallenge.org/2025/challenges/)
-
-</div>
+[Live Demo](https://skycast-nasa.vercel.app) · [Data Provenance (modal)](#data-provenance--methodology) · [Implementation Status](./IMPLEMENTATION_STATUS.md) · [Challenge Page](https://www.spaceappschallenge.org/2025/challenges/)
 
 ---
 
@@ -67,62 +63,54 @@ The goal: leverage Earth observation + ground networks to deliver actionable, gl
 
 ---
 
-## 🛠️ Tech Stack (Focused Subset Used Now)
+## Quick Launch
 
-## 👥 Team Credits
+### Requirements
+- Node.js 20+
+- Python 3.11+
+- (Optional) Docker & Docker Compose
+- (Planned) NASA Earthdata Account for real TEMPO ingestion
 
-**Team SkyCast** - NASA Space Apps Challenge 2025
-
-- **Muhammad Abdullah Atif** - Full-Stack Developer & ML Engineer
-- (Add collaborators if applicable)
-
----
-
-## � Data Provenance and Methodology
-
-│ │ │ ├── tempo.py
-│ │ │ ├── openaq.py
-│ │ │ └── forecast.py
-│ │ ├── services/ # Business logic
-│ │ ├── models/ # Pydantic models
-│ │ └── utils/ # Helper functions
-│ ├── requirements.txt
-│ ├── notebooks/ # Jupyter notebooks
-│ │ ├── 02_feature_engineering.ipynb
-│ │ └── 03_model_training.ipynb
-│ ├── scripts/ # Training scripts
-│ │ ├── train_lstm.py
-│ │ ├── train_xgboost.py
-│ ├── models/ # Saved models (.pkl)
-│ └── requirements.txt
-├── cloud/ # Infrastructure
-│ ├── docker-compose.yml
-│ ├── Dockerfile.frontend
-│ ├── Dockerfile.backend
-│ └── terraform/ # IaC (optional)
-├── docs/ # Documentation
-│ ├── api/ # API documentation
-│ ├── screenshots/ # App screenshots
-│ └── hackathon/ # Deliverables
-├── .gitignore
-├── LICENSE
-└── README.md
-
+### 1. Clone & Install
 ```
+git clone https://github.com/Abdullah2008-bit/NASA.git
+cd NASA/skycast
+```
+Frontend:
+```
+cd frontend
+pnpm install # or npm install / yarn
+pnpm dev
+```
+Backend:
+```
+cd ../backend
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+```
+Visit: http://localhost:3000 (frontend) and http://localhost:8000/docs (API docs if enabled).
 
-
-
-- **Node.js** 20+
-- **Python** 3.11+
-- **Docker** & Docker Compose
-- **NASA Earthdata Account** ([Sign up here](https://urs.earthdata.nasa.gov/))
-
-### 1. Clone the Repository
-
-### 2. Set Up Environment Variables
-
+### 2. Environment Variables
+Copy `.env.example` to `.env.local` (frontend) / `.env` (backend) and set at minimum:
+```
 NEXT_PUBLIC_MAPBOX_TOKEN=your_mapbox_token
+BACKEND_API_BASE=http://localhost:8000
 ```
+Optional future ingestion (not yet required):
+```
+EARTHDATA_USERNAME=...
+EARTHDATA_PASSWORD=...
+```
+
+### 3. Run Tests (Backend AQI)
+```
+cd backend
+pytest -q
+```
+
+Docker (optional one-command orchestration): See `DEPLOYMENT.md`.
 
 ---
 
@@ -141,41 +129,26 @@ Stretch: wildfire smoke plume integration (VIIRS), health burden estimation, per
 
 ---
 
-## 📜 License
+## Data Provenance & Methodology
 
-MIT License – see [LICENSE](LICENSE).
+See in‑app “Data Provenance” modal for user‑friendly summary. Technical points:
 
----
+- Subindex formula: linear interpolation within EPA breakpoint interval: `I = (I_hi - I_lo)/(C_hi - C_lo) * (C - C_lo) + I_lo`.
+- Dominant pollutant = max subindex (integer AQI value).
+- Fusion precedence: ground > satellite per pollutant; missing values fallback gracefully.
+- Satellite placeholder is swappable (service boundary already defined).
+- Validation roadmap: cross-source consistency scoring + anomaly detection.
 
-## 📞 Contact
+Limitations (current build):
+- No real TEMPO retrieval yet (mock values).
+- O₃ 8‑hour average uses instantaneous proxy.
+- Single-station dominance (multi-station weighting forthcoming).
+- Forecast not model-backed yet.
 
-- **GitHub**: [@Abdullah2008-bit](https://github.com/Abdullah2008-bit)
-- **Project Repository**: [NASA SkyCast](https://github.com/Abdullah2008-bit/NASA)
-- **Email**: (add contact)
-
----
-
-_Built with ❤️ for NASA Space Apps Challenge 2025 – Transparent, extensible, globally fair air quality intelligence._
-
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
-```
-
-**ML Training**:
-
-```bash
-cd ml
-pip install -r requirements.txt
-jupyter notebook  # Explore notebooks
-# or
-python scripts/train_lstm.py
-```
-
----
+Ethical / Fair Use:
+- No regional prioritization or hard-coded bias.
+- Explicit attribution for each upstream network.
+- Open design encourages environmental transparency.
 
 ## 📊 Data Sources
 
@@ -301,54 +274,12 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ---
 
-## � Data Provenance & Methodology
+## Contact
 
-See in‑app “Data Provenance” modal for user‑friendly summary. Technical points:
-
-- Subindex formula: linear interpolation within EPA breakpoint interval: `I = (I_hi - I_lo)/(C_hi - C_lo) * (C - C_lo) + I_lo`.
-- Dominant pollutant = max subindex (rounded to nearest integer for AQI value).
-- Fusion precedence: ground > satellite per pollutant; missing values fallback gracefully.
-- Satellite placeholder intentionally architected to be swappable with real ingestion service (already imported as `tempo_service`).
-- Validation roadmap includes cross-source consistency scoring + anomaly trend flagging.
-
-Limitations (current build):
-
-- No real TEMPO retrieval yet (mock values).
-- O₃ 8‑hour average uses instantaneous proxy.
-- Single-station dominance (multi-station weighting forthcoming).
-- Forecast not model-backed yet.
-
-Ethical / Fair Use:
-
-- No regional prioritization or hard-coded city bias.
-- Attribution provided for each upstream network.
-- Encourages open environmental transparency.
+- GitHub: [@Abdullah2008-bit](https://github.com/Abdullah2008-bit)
+- Repository: [NASA SkyCast](https://github.com/Abdullah2008-bit/NASA)
+- Email: add contact
 
 ---
 
-## 🧭 Roadmap (Post-Submission)
-
-| Phase | Focus              | Key Deliverables                                      |
-| ----- | ------------------ | ----------------------------------------------------- |
-| 1     | Real Satellite     | Earthaccess auth, granule search, spatial aggregation |
-| 2     | Historical Store   | Persist fused hourly frames (TSDB or parquet)         |
-| 3     | Forecast Models    | Train + version XGBoost/LSTM ensemble                 |
-| 4     | Validation Layer   | Multi-station weighting + uncertainty bands           |
-| 5     | Advanced Analytics | Source contribution decomposition, drift detection    |
-| 6     | Public API Tier    | Rate limiting, API keys, usage metrics                |
-
-Stretch: wildfire smoke plume integration (VIIRS), health burden estimation, personal exposure mode.
-
-## 📞 Contact
-
-- **GitHub**: [@Abdullah2008-bit](https://github.com/Abdullah2008-bit)
-- **Project Repository**: [NASA SkyCast](https://github.com/Abdullah2008-bit/NASA)
-- **Email**: [Your email here]
-
----
-
-<div align="center">
-  <strong>Built with ❤️ for NASA Space Apps Challenge 2025</strong>
-  <br />
-  <sub>Transparent, extensible, and globally fair air quality intelligence</sub>
-</div>
+Built for NASA Space Apps Challenge 2025 – Transparent, extensible, globally fair air quality intelligence.
