@@ -51,6 +51,13 @@ export interface AggregatedAirQuality {
     tempo: unknown;
     openaq: unknown;
   };
+  fusion?: {
+    stationsUsed: number;
+    radiusUsedKm: number;
+    weighting: string;
+    pollutantsWeighted: string[];
+    attempts: number;
+  };
 }
 
 // Ground Station Data

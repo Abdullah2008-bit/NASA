@@ -26,6 +26,7 @@ import {
   useAggregatedAirQuality,
 } from "@/hooks/use-air-quality-data";
 import { DataProvenanceModal } from "@/components/data/DataProvenanceModal";
+import { FusionStats } from "@/components/data/FusionStats";
 // Alert types removed after deterministic alert refactor
 
 // Lazy load 3D Globe for better performance
@@ -235,14 +236,14 @@ export default function Home() {
   // NOTE: location selection via future global search component will call setSelectedLocation directly
 
   const tabs = [
-    { id: "dashboard", label: "Dashboard", icon: "🌍" },
-    { id: "forecast", label: "Forecast", icon: "📈" },
-    { id: "alerts", label: "Alerts", icon: "🚨" },
-    { id: "history", label: "History", icon: "📊" },
-    { id: "validation", label: "Validation", icon: "✅" },
-    { id: "analytics", label: "Analytics", icon: "🔍" },
-    { id: "comparison", label: "Compare", icon: "🔄" },
-    { id: "health", label: "Health", icon: "❤️" },
+    { id: "dashboard", label: "Dashboard" },
+    { id: "forecast", label: "Forecast" },
+    { id: "alerts", label: "Alerts" },
+    { id: "history", label: "History" },
+    { id: "validation", label: "Validation" },
+    { id: "analytics", label: "Analytics" },
+    { id: "comparison", label: "Compare" },
+    { id: "health", label: "Health" },
   ] as const;
 
   return (
@@ -283,7 +284,7 @@ export default function Home() {
               </div>
             </div>
 
-            <nav className="flex gap-6">
+            <nav className="flex gap-5">
               {tabs.map((tab, i) => (
                 <motion.button
                   key={tab.id}
@@ -299,7 +300,6 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1 }}
                 >
-                  <span className="mr-1">{tab.icon}</span>
                   {tab.label}
                 </motion.button>
               ))}
@@ -331,12 +331,15 @@ export default function Home() {
                 {/* Left Column - Stats */}
                 <div className="space-y-6">
                   {/* Current AQI */}
-                  <AQICard
-                    aqi={currentPollutants.aqi}
-                    location={selectedLocation.name}
-                    timestamp={new Date()}
-                    className="bg-gray-900/50 backdrop-blur-xl"
-                  />
+                  <div className="space-y-4">
+                    <AQICard
+                      aqi={aggregated?.aqi?.value ?? currentPollutants.aqi}
+                      location={selectedLocation.name}
+                      timestamp={new Date(aggregated?.timestamp || Date.now())}
+                      className="bg-gray-900/50 backdrop-blur-xl"
+                    />
+                    <FusionStats data={aggregated} />
+                  </div>
                   {/* Alerts: deterministic toasts now handled via AQI change logic */}
 
                   {/* Pollutant Breakdown */}
